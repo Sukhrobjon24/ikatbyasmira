@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContentProvider } from "@/components/content-provider";
+import { FloatingActions } from "@/components/floating-actions";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { dictionaries, locales, type Locale } from "@/lib/i18n";
-import { initialContent } from "@/data/site";
+import { dictionaries, locales } from "@/lib/i18n";
+import { getSiteContent } from "@/lib/site-content";
+import type { Locale } from "@/types/content";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -53,12 +55,19 @@ export default async function LocaleLayout({
 
   const typedLocale = locale as Locale;
   const dictionary = dictionaries[typedLocale];
+  const { content, mode } = await getSiteContent();
 
   return (
-    <ContentProvider locale={typedLocale} dictionary={dictionary} initialContent={initialContent}>
+    <ContentProvider
+      locale={typedLocale}
+      dictionary={dictionary}
+      initialContent={content}
+      mode={mode}
+    >
       <div className="page-shell">
         <SiteHeader />
         <main>{children}</main>
+        <FloatingActions />
         <SiteFooter />
       </div>
     </ContentProvider>

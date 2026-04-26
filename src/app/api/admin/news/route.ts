@@ -1,0 +1,43 @@
+import { NextResponse } from "next/server";
+import { createNewsItem } from "@/lib/content-store";
+import { isSupabaseWriteConfigured } from "@/lib/env";
+import { insertNewsItem } from "@/lib/site-content";
+
+export async function POST(request: Request) {
+  if (!isSupabaseWriteConfigured) {
+    return NextResponse.json(
+      {
+        message:
+          "Supabase write access is not configured yet. Add the service role key to enable live admin writes.",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const payload = (await request.json()) as {
+      image?: string;
+      title?: string;
+      excerpt?: string;
+      body?: string;
+      date?: string;
+    };
+
+    const item = createNewsItem({
+      image: payload.image ?? "",
+      title: payload.title ?? "",
+      excerpt: payload.excerpt ?? "",
+      body: payload.body ?? "",
+      date: payload.date ?? new Date().toISOString().slice(0, 10),
+    });
+
+    await insertNewsItem(item);
+
+    return NextResponse.json({ item });
+  } catch {
+    return NextResponse.json(
+      { message: "Unable to save news post to Supabase." },
+      { status: 500 },
+    );
+  }
+}

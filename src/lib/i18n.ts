@@ -3,10 +3,10 @@ import type { Locale } from "@/types/content";
 export const locales: Locale[] = ["uz", "ru", "en", "tg"];
 
 export const localeLabels: Record<Locale, string> = {
-  uz: "O'z",
-  ru: "Ру",
-  en: "En",
-  tg: "Тоҷ",
+  uz: "UZ",
+  ru: "RU",
+  en: "EN",
+  tg: "TJ",
 };
 
 export const dictionaries = {
@@ -33,6 +33,14 @@ export const dictionaries = {
       exploreGallery: "Galereyani ko'rish",
       readNews: "Yangiliklarni o'qish",
       contactUs: "Bog'lanish",
+    },
+    ui: {
+      menu: "Menyu",
+      close: "Yopish",
+      whatsapp: "WhatsApp",
+      telegram: "Telegram",
+      instagram: "Instagram",
+      location: "Lokatsiya",
     },
     hero: {
       eyebrow: "Samarqanddan dunyoga",
@@ -134,6 +142,14 @@ export const dictionaries = {
       readNews: "Читать новости",
       contactUs: "Связаться",
     },
+    ui: {
+      menu: "Меню",
+      close: "Закрыть",
+      whatsapp: "WhatsApp",
+      telegram: "Telegram",
+      instagram: "Instagram",
+      location: "Локация",
+    },
     hero: {
       eyebrow: "Из Самарканда в мир",
       title: "Authentic IKAT from Uzbekistan",
@@ -233,6 +249,14 @@ export const dictionaries = {
       exploreGallery: "Explore Gallery",
       readNews: "Read News",
       contactUs: "Contact Us",
+    },
+    ui: {
+      menu: "Menu",
+      close: "Close",
+      whatsapp: "WhatsApp",
+      telegram: "Telegram",
+      instagram: "Instagram",
+      location: "Location",
     },
     hero: {
       eyebrow: "From Samarkand to the world",
@@ -334,6 +358,14 @@ export const dictionaries = {
       readNews: "Хондани хабарҳо",
       contactUs: "Тамос",
     },
+    ui: {
+      menu: "Меню",
+      close: "Пӯшидан",
+      whatsapp: "WhatsApp",
+      telegram: "Telegram",
+      instagram: "Instagram",
+      location: "Ҷойгиршавӣ",
+    },
     hero: {
       eyebrow: "Аз Самарқанд ба ҷаҳон",
       title: "Authentic IKAT from Uzbekistan",
@@ -413,3 +445,4 @@ export const dictionaries = {
 } as const;
 
 export type Dictionary = (typeof dictionaries)[Locale];
+export type { Locale } from "@/types/content";

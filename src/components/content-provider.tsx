@@ -3,8 +3,6 @@
 import {
   createContext,
   useContext,
-  useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -19,13 +17,16 @@ import {
 import type { Dictionary } from "@/lib/i18n";
 import type { ContentState, Locale } from "@/types/content";
 
+export type SiteMode = "demo" | "supabase-readonly" | "supabase";
+
 type ContentContextValue = {
   locale: Locale;
   dictionary: Dictionary;
+  mode: SiteMode;
   content: ContentState;
-  addProduct: (input: Parameters<typeof createProduct>[0]) => void;
-  addGalleryItem: (input: Parameters<typeof createGalleryItem>[0]) => void;
-  addNewsItem: (input: Parameters<typeof createNewsItem>[0]) => void;
+  addProduct: (input: Parameters<typeof createProduct>[0]) => Promise<string>;
+  addGalleryItem: (input: Parameters<typeof createGalleryItem>[0]) => Promise<string>;
+  addNewsItem: (input: Parameters<typeof createNewsItem>[0]) => Promise<string>;
 };
 
 const ContentContext = createContext<ContentContextValue | null>(null);
@@ -35,64 +36,152 @@ export function ContentProvider({
   locale,
   dictionary,
   initialContent,
+  mode,
 }: {
   children: ReactNode;
   locale: Locale;
   dictionary: Dictionary;
   initialContent: ContentState;
+  mode: SiteMode;
 }) {
-  const [storedContent, setStoredContent] = useState<Partial<ContentState>>({});
-
-  useEffect(() => {
-    setStoredContent(readStoredContent());
-  }, []);
-
-  const content = useMemo(
-    () => mergeContent(initialContent, storedContent),
-    [initialContent, storedContent],
+  const [content, setContent] = useState<ContentState>(() =>
+    mode === "demo"
+      ? mergeContent(initialContent, readStoredContent())
+      : initialContent,
   );
 
-  const value = useMemo<ContentContextValue>(
-    () => ({
-      locale,
-      dictionary,
-      content,
-      addProduct(input) {
-        setStoredContent((current) => {
-          const next = {
-            ...current,
-            products: [createProduct(input), ...(current.products ?? [])],
-          };
+  const value: ContentContextValue = {
+    locale,
+    dictionary,
+    mode,
+    content,
+    async addProduct(input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
 
-          writeStoredContent(next);
-          return next;
-        });
-      },
-      addGalleryItem(input) {
-        setStoredContent((current) => {
-          const next = {
-            ...current,
-            gallery: [createGalleryItem(input), ...(current.gallery ?? [])],
-          };
+      const item = createProduct(input);
 
-          writeStoredContent(next);
-          return next;
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(input),
         });
-      },
-      addNewsItem(input) {
-        setStoredContent((current) => {
-          const next = {
-            ...current,
-            news: [createNewsItem(input), ...(current.news ?? [])],
-          };
 
-          writeStoredContent(next);
-          return next;
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to save product.");
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        products: [item, ...current.products],
+      }));
+
+      if (mode === "demo") {
+        const stored = readStoredContent();
+        writeStoredContent({
+          products: [item, ...(stored.products ?? [])],
+          gallery: stored.gallery ?? [],
+          news: stored.news ?? [],
         });
-      },
-    }),
-    [content, dictionary, locale],
-  );
+      }
+
+      return mode === "supabase"
+        ? "Product saved to Supabase."
+        : "Product added to local demo content.";
+    },
+    async addGalleryItem(input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const item = createGalleryItem(input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/gallery", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(input),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to save gallery item.");
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        gallery: [item, ...current.gallery],
+      }));
+
+      if (mode === "demo") {
+        const stored = readStoredContent();
+        writeStoredContent({
+          products: stored.products ?? [],
+          gallery: [item, ...(stored.gallery ?? [])],
+          news: stored.news ?? [],
+        });
+      }
+
+      return mode === "supabase"
+        ? "Gallery item saved to Supabase."
+        : "Gallery item added to local demo content.";
+    },
+    async addNewsItem(input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const item = createNewsItem(input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/news", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(input),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to save news post.");
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        news: [item, ...current.news],
+      }));
+
+      if (mode === "demo") {
+        const stored = readStoredContent();
+        writeStoredContent({
+          products: stored.products ?? [],
+          gallery: stored.gallery ?? [],
+          news: [item, ...(stored.news ?? [])],
+        });
+      }
+
+      return mode === "supabase"
+        ? "News post saved to Supabase."
+        : "News post added to local demo content.";
+    },
+  };
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
 }

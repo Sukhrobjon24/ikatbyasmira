@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 type ProductDetailPageProps = {
   slug: string;
@@ -10,6 +11,8 @@ type ProductDetailPageProps = {
 export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   const { content, dictionary, locale } = useSiteContent();
   const product = content.products.find((item) => item.slug === slug);
+  const detailGallery = [product?.image, "/uploads/ikat/look-11.jpg", "/uploads/ikat/look-05.jpg"]
+    .filter(Boolean) as string[];
 
   if (!product) {
     return (
@@ -28,20 +31,32 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   return (
     <section className="section page-intro">
       <div className="container product-detail-grid">
-        <div className="product-gallery-stack">
+        <ViewportReveal className="product-gallery-stack">
           <div className="image-frame image-frame--detail">
-            <Image src={product.image} alt={product.name[locale]} fill className="art-image" />
+            <Image
+              src={product.image}
+              alt={product.name[locale]}
+              fill
+              className="art-image"
+              sizes="(max-width: 1100px) 100vw, 50vw"
+            />
           </div>
           <div className="detail-thumbs">
-            {[product.image, "/hero-main.svg", "/hero-detail.svg"].map((image, index) => (
+            {detailGallery.map((image, index) => (
               <div className="image-frame image-frame--thumb" key={`${image}-${index}`}>
-                <Image src={image} alt={`${product.name[locale]} ${index + 1}`} fill className="art-image" />
+                <Image
+                  src={image}
+                  alt={`${product.name[locale]} ${index + 1}`}
+                  fill
+                  className="art-image"
+                  sizes="(max-width: 760px) 100vw, 16vw"
+                />
               </div>
             ))}
           </div>
-        </div>
+        </ViewportReveal>
 
-        <div className="detail-copy">
+        <ViewportReveal className="detail-copy" delay={120}>
           <p className="section-kicker">{product.category[locale]}</p>
           <h1>{product.name[locale]}</h1>
           <p className="detail-price">
@@ -72,7 +87,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             </a>
           </div>
           <p className="detail-note">{dictionary.cta.contactOrder}</p>
-        </div>
+        </ViewportReveal>
       </div>
     </section>
   );

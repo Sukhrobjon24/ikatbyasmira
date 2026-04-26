@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 export function HomePage() {
   const { content, dictionary, locale } = useSiteContent();
@@ -11,7 +12,11 @@ export function HomePage() {
     <>
       <section className="hero-section">
         <div className="container hero-grid">
-          <div className="hero-copy reveal-up">
+          <ViewportReveal className="hero-copy">
+            <div className="hero-badges">
+              <span className="hero-badge">Handmade Silk</span>
+              <span className="hero-badge">Luxury Heritage</span>
+            </div>
             <p className="section-kicker">{dictionary.hero.eyebrow}</p>
             <h1>{dictionary.hero.title}</h1>
             <p className="hero-description">{dictionary.hero.description}</p>
@@ -23,37 +28,44 @@ export function HomePage() {
                 {dictionary.cta.discoverStory}
               </Link>
             </div>
-          </div>
+          </ViewportReveal>
 
-          <div className="hero-visual reveal-up reveal-delay">
+          <ViewportReveal className="hero-visual" delay={160}>
             <div className="hero-card hero-card--main">
               <Image
-                src="/hero-main.svg"
+                src="/uploads/ikat/look-09.jpg"
                 alt="IKAT premium silk visual"
                 fill
                 className="art-image"
                 priority
+                sizes="(max-width: 760px) 100vw, (max-width: 1100px) 80vw, 45vw"
               />
             </div>
             <div className="hero-card hero-card--accent">
-              <Image src="/hero-detail.svg" alt="IKAT fabric detail" fill className="art-image" />
+              <Image
+                src="/uploads/ikat/look-11.jpg"
+                alt="IKAT fabric detail"
+                fill
+                className="art-image"
+                sizes="(max-width: 760px) 55vw, 18rem"
+              />
             </div>
-          </div>
+          </ViewportReveal>
         </div>
       </section>
 
       <section className="section">
-        <div className="container split-card">
+        <ViewportReveal className="container split-card">
           <div>
             <p className="section-kicker">{dictionary.home.aboutTitle}</p>
             <h2>Tradition woven into a modern silhouette.</h2>
           </div>
           <p className="lead-text">{dictionary.home.aboutText}</p>
-        </div>
+        </ViewportReveal>
       </section>
 
       <section className="section">
-        <div className="container">
+        <ViewportReveal className="container">
           <div className="section-heading">
             <div>
               <p className="section-kicker">{dictionary.home.featuredTitle}</p>
@@ -65,10 +77,16 @@ export function HomePage() {
           </div>
 
           <div className="product-grid">
-            {content.products.slice(0, 3).map((product) => (
-              <article className="luxury-card reveal-up" key={product.id}>
+            {content.products.slice(0, 4).map((product, index) => (
+              <ViewportReveal className="luxury-card" key={product.id} delay={index * 90}>
                 <div className="image-frame">
-                  <Image src={product.image} alt={product.name[locale]} fill className="art-image" />
+                  <Image
+                    src={product.image}
+                    alt={product.name[locale]}
+                    fill
+                    className="art-image"
+                    sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                  />
                 </div>
                 <p className="card-category">{product.category[locale]}</p>
                 <h3>{product.name[locale]}</h3>
@@ -79,14 +97,14 @@ export function HomePage() {
                     {dictionary.cta.viewCollection}
                   </Link>
                 </div>
-              </article>
+              </ViewportReveal>
             ))}
           </div>
-        </div>
+        </ViewportReveal>
       </section>
 
       <section className="section section-warm">
-        <div className="container">
+        <ViewportReveal className="container">
           <div className="section-heading">
             <div>
               <p className="section-kicker">{dictionary.home.galleryTitle}</p>
@@ -97,21 +115,27 @@ export function HomePage() {
             </Link>
           </div>
           <div className="gallery-preview">
-            {content.gallery.slice(0, 4).map((item) => (
-              <div className="gallery-tile" key={item.id}>
-                <Image src={item.image} alt={item.title[locale]} fill className="art-image" />
+            {content.gallery.slice(0, 4).map((item, index) => (
+              <ViewportReveal className="gallery-tile" key={item.id} delay={index * 80}>
+                <Image
+                  src={item.image}
+                  alt={item.title[locale]}
+                  fill
+                  className="art-image"
+                  sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                />
                 <div className="gallery-overlay">
                   <h3>{item.title[locale]}</h3>
                   <p>{item.location[locale]}</p>
                 </div>
-              </div>
+              </ViewportReveal>
             ))}
           </div>
-        </div>
+        </ViewportReveal>
       </section>
 
       <section className="section">
-        <div className="container stats-band">
+        <ViewportReveal className="container stats-band">
           <div>
             <p className="section-kicker">{dictionary.home.statsTitle}</p>
             <h2>Luxury storytelling shaped for a global audience.</h2>
@@ -124,11 +148,11 @@ export function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </ViewportReveal>
       </section>
 
       <section className="section">
-        <div className="container">
+        <ViewportReveal className="container">
           <div className="section-heading">
             <div>
               <p className="section-kicker">{dictionary.home.newsTitle}</p>
@@ -139,18 +163,24 @@ export function HomePage() {
             </Link>
           </div>
           <div className="news-grid">
-            {content.news.slice(0, 3).map((post) => (
-              <article className="news-card" key={post.id}>
+            {content.news.slice(0, 3).map((post, index) => (
+              <ViewportReveal className="news-card" key={post.id} delay={index * 90}>
                 <div className="image-frame image-frame--wide">
-                  <Image src={post.cover} alt={post.title[locale]} fill className="art-image" />
+                  <Image
+                    src={post.cover}
+                    alt={post.title[locale]}
+                    fill
+                    className="art-image"
+                    sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                  />
                 </div>
                 <span className="news-date">{post.date}</span>
                 <h3>{post.title[locale]}</h3>
                 <p>{post.excerpt[locale]}</p>
-              </article>
+              </ViewportReveal>
             ))}
           </div>
-        </div>
+        </ViewportReveal>
       </section>
     </>
   );

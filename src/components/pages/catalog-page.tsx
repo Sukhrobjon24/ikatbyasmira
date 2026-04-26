@@ -3,13 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 export function CatalogPage() {
   const { content, dictionary, locale } = useSiteContent();
 
   return (
     <section className="section page-intro">
-      <div className="container">
+      <ViewportReveal className="container">
         <div className="section-heading">
           <div>
             <p className="section-kicker">{dictionary.catalog.filterLabel}</p>
@@ -19,10 +20,16 @@ export function CatalogPage() {
         </div>
 
         <div className="product-grid">
-          {content.products.map((product) => (
-            <article className="luxury-card" key={product.id}>
+          {content.products.map((product, index) => (
+            <ViewportReveal className="luxury-card" key={product.id} delay={index * 70}>
               <div className="image-frame">
-                <Image src={product.image} alt={product.name[locale]} fill className="art-image" />
+                <Image
+                  src={product.image}
+                  alt={product.name[locale]}
+                  fill
+                  className="art-image"
+                  sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                />
               </div>
               <p className="card-category">{product.category[locale]}</p>
               <h3>{product.name[locale]}</h3>
@@ -40,10 +47,10 @@ export function CatalogPage() {
                   {dictionary.cta.viewCollection}
                 </Link>
               </div>
-            </article>
+            </ViewportReveal>
           ))}
         </div>
-      </div>
+      </ViewportReveal>
     </section>
   );
 }

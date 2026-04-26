@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 export function NewsPage() {
   const { content, dictionary, locale } = useSiteContent();
 
   return (
     <section className="section page-intro">
-      <div className="container">
+      <ViewportReveal className="container">
         <div className="section-heading">
           <div>
             <p className="section-kicker">{dictionary.nav.news}</p>
@@ -18,10 +19,16 @@ export function NewsPage() {
         </div>
 
         <div className="journal-stack">
-          {content.news.map((post) => (
-            <article className="journal-card" key={post.id}>
+          {content.news.map((post, index) => (
+            <ViewportReveal className="journal-card" key={post.id} delay={index * 90}>
               <div className="image-frame image-frame--journal">
-                <Image src={post.cover} alt={post.title[locale]} fill className="art-image" />
+                <Image
+                  src={post.cover}
+                  alt={post.title[locale]}
+                  fill
+                  className="art-image"
+                  sizes="(max-width: 1100px) 100vw, 40vw"
+                />
               </div>
               <div className="journal-copy">
                 <span className="news-date">{post.date}</span>
@@ -29,10 +36,10 @@ export function NewsPage() {
                 <p>{post.excerpt[locale]}</p>
                 <p>{post.body[locale]}</p>
               </div>
-            </article>
+            </ViewportReveal>
           ))}
         </div>
-      </div>
+      </ViewportReveal>
     </section>
   );
 }

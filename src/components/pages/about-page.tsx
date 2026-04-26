@@ -1,13 +1,14 @@
 "use client";
 
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 export function AboutPage() {
   const { dictionary } = useSiteContent();
 
   return (
     <section className="section page-intro">
-      <div className="container narrow-stack">
+      <ViewportReveal className="container narrow-stack">
         <p className="section-kicker">{dictionary.nav.about}</p>
         <h1>{dictionary.about.title}</h1>
         <p className="lead-text">{dictionary.about.intro}</p>
@@ -28,7 +29,7 @@ export function AboutPage() {
             </ul>
           </div>
         </div>
-      </div>
+      </ViewportReveal>
     </section>
   );
 }

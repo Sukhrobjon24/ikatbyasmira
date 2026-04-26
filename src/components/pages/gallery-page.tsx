@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useSiteContent } from "@/components/content-provider";
+import { ViewportReveal } from "@/components/viewport-reveal";
 
 export function GalleryPage() {
   const { content, dictionary, locale } = useSiteContent();
 
   return (
     <section className="section page-intro">
-      <div className="container">
+      <ViewportReveal className="container">
         <div className="section-heading">
           <div>
             <p className="section-kicker">{dictionary.nav.gallery}</p>
@@ -18,20 +19,26 @@ export function GalleryPage() {
         </div>
 
         <div className="masonry-grid">
-          {content.gallery.map((item) => (
-            <article className="masonry-card" key={item.id}>
+          {content.gallery.map((item, index) => (
+            <ViewportReveal className="masonry-card" key={item.id} delay={index * 80}>
               <div className="image-frame image-frame--masonry">
-                <Image src={item.image} alt={item.title[locale]} fill className="art-image" />
+                <Image
+                  src={item.image}
+                  alt={item.title[locale]}
+                  fill
+                  className="art-image"
+                  sizes="(max-width: 760px) 100vw, 50vw"
+                />
               </div>
               <div className="masonry-copy">
                 <h3>{item.title[locale]}</h3>
                 <p className="card-category">{item.location[locale]}</p>
                 <p>{item.description[locale]}</p>
               </div>
-            </article>
+            </ViewportReveal>
           ))}
         </div>
-      </div>
+      </ViewportReveal>
     </section>
   );
 }
