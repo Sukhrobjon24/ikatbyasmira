@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useSiteContent } from "@/components/content-provider";
 import { ViewportReveal } from "@/components/viewport-reveal";
+import { getWhatsAppUrl, socialLinks } from "@/lib/social";
 
 type ProductDetailPageProps = {
   slug: string;
@@ -19,14 +20,14 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
       <section className="section page-intro">
         <div className="container narrow-stack">
           <p className="section-kicker">{dictionary.nav.catalog}</p>
-          <h1>Product not found</h1>
-          <p className="lead-text">
-            This product is not available in the current catalog view.
-          </p>
+          <h1>{dictionary.catalog.notFoundTitle}</h1>
+          <p className="lead-text">{dictionary.catalog.notFoundText}</p>
         </div>
       </section>
     );
   }
+
+  const orderMessage = `Hello, I would like to order ${product.name.en} (${product.slug}).`;
 
   return (
     <section className="section page-intro">
@@ -71,19 +72,19 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           <div className="detail-actions">
             <a
               className="button-primary"
-              href="https://wa.me/998901234567"
+              href={getWhatsAppUrl(orderMessage)}
               target="_blank"
               rel="noreferrer"
             >
-              WhatsApp
+              {dictionary.ui.whatsapp}
             </a>
             <a
               className="button-secondary"
-              href="https://t.me/ikatbyasmira"
+              href={socialLinks.telegram}
               target="_blank"
               rel="noreferrer"
             >
-              Telegram
+              {dictionary.ui.telegram}
             </a>
           </div>
           <p className="detail-note">{dictionary.cta.contactOrder}</p>

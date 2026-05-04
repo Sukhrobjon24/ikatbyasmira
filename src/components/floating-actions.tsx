@@ -1,5 +1,6 @@
 "use client";
 
+import { getWhatsAppUrl, socialLinks } from "@/lib/social";
 import { useSiteContent } from "./content-provider";
 
 export function FloatingActions() {
@@ -7,25 +8,21 @@ export function FloatingActions() {
 
   const links = [
     {
-      href: "https://wa.me/998901234567",
+      href: getWhatsAppUrl(),
       label: dictionary.ui.whatsapp,
     },
     {
-      href: "https://t.me/ikatbyasmira",
+      href: socialLinks.telegram,
       label: dictionary.ui.telegram,
     },
     {
-      href: "https://instagram.com/ikatbyasmira",
+      href: socialLinks.instagram,
       label: dictionary.ui.instagram,
-    },
-    {
-      href: "https://maps.google.com/?q=Samarkand%2C%20Uzbekistan",
-      label: dictionary.ui.location,
     },
   ];
 
   return (
-    <div className="floating-actions" aria-label="Quick actions">
+    <div className="floating-actions" aria-label="Quick contact actions">
       {links.map((link) => (
         <a
           key={link.label}

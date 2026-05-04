@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  createCollectionVideo,
   createGalleryItem,
   createNewsItem,
   createProduct,
@@ -27,6 +28,9 @@ type ContentContextValue = {
   addProduct: (input: Parameters<typeof createProduct>[0]) => Promise<string>;
   addGalleryItem: (input: Parameters<typeof createGalleryItem>[0]) => Promise<string>;
   addNewsItem: (input: Parameters<typeof createNewsItem>[0]) => Promise<string>;
+  addCollectionVideo: (
+    input: Parameters<typeof createCollectionVideo>[0],
+  ) => Promise<string>;
 };
 
 const ContentContext = createContext<ContentContextValue | null>(null);
@@ -90,6 +94,7 @@ export function ContentProvider({
           products: [item, ...(stored.products ?? [])],
           gallery: stored.gallery ?? [],
           news: stored.news ?? [],
+          collections: stored.collections ?? [],
         });
       }
 
@@ -132,6 +137,7 @@ export function ContentProvider({
           products: stored.products ?? [],
           gallery: [item, ...(stored.gallery ?? [])],
           news: stored.news ?? [],
+          collections: stored.collections ?? [],
         });
       }
 
@@ -174,12 +180,56 @@ export function ContentProvider({
           products: stored.products ?? [],
           gallery: stored.gallery ?? [],
           news: [item, ...(stored.news ?? [])],
+          collections: stored.collections ?? [],
         });
       }
 
       return mode === "supabase"
         ? "News post saved to Supabase."
         : "News post added to local demo content.";
+    },
+    async addCollectionVideo(input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const item = createCollectionVideo(input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/collections", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(input),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to save collection video.");
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        collections: [item, ...current.collections],
+      }));
+
+      if (mode === "demo") {
+        const stored = readStoredContent();
+        writeStoredContent({
+          products: stored.products ?? [],
+          gallery: stored.gallery ?? [],
+          news: stored.news ?? [],
+          collections: [item, ...(stored.collections ?? [])],
+        });
+      }
+
+      return mode === "supabase"
+        ? "Collection video saved to Supabase."
+        : "Collection video added to local demo content.";
     },
   };
 

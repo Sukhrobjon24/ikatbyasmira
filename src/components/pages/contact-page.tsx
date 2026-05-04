@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSiteContent } from "@/components/content-provider";
 import { ViewportReveal } from "@/components/viewport-reveal";
+import { getWhatsAppUrl, socialLinks } from "@/lib/social";
 
 export function ContactPage() {
   const { dictionary } = useSiteContent();
@@ -17,12 +18,14 @@ export function ContactPage() {
           <p className="lead-text">{dictionary.contact.subtitle}</p>
 
           <div className="contact-card">
-            <p>Phone: +998 90 123 45 67</p>
-            <p>Email: hello@ikatbyasmira.uz</p>
-            <p>Location: Samarkand, Uzbekistan</p>
+            <p>
+              {dictionary.contact.phone}: +998 90 123 45 67
+            </p>
+            <p>{dictionary.contact.email}: hello@ikatbyasmira.uz</p>
+            <p>{dictionary.ui.location}: {dictionary.contact.location}</p>
             <div className="detail-actions">
               <a
-                href="https://wa.me/998901234567"
+                href={getWhatsAppUrl()}
                 target="_blank"
                 rel="noreferrer"
                 className="button-primary"
@@ -30,7 +33,7 @@ export function ContactPage() {
                 {dictionary.ui.whatsapp}
               </a>
               <a
-                href="https://instagram.com/ikatbyasmira"
+                href={socialLinks.instagram}
                 target="_blank"
                 rel="noreferrer"
                 className="button-secondary"
@@ -38,7 +41,7 @@ export function ContactPage() {
                 {dictionary.ui.instagram}
               </a>
               <a
-                href="https://t.me/ikatbyasmira"
+                href={socialLinks.telegram}
                 target="_blank"
                 rel="noreferrer"
                 className="button-secondary"
@@ -46,7 +49,7 @@ export function ContactPage() {
                 {dictionary.ui.telegram}
               </a>
               <a
-                href="https://maps.google.com/?q=Samarkand%2C%20Uzbekistan"
+                href={socialLinks.maps}
                 target="_blank"
                 rel="noreferrer"
                 className="button-secondary"
@@ -66,10 +69,7 @@ export function ContactPage() {
           </div>
         </ViewportReveal>
 
-        <ViewportReveal
-          className="contact-form"
-          delay={140}
-        >
+        <ViewportReveal className="contact-form" delay={140}>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -91,11 +91,7 @@ export function ContactPage() {
             <button className="button-primary" type="submit">
               {dictionary.contact.form.submit}
             </button>
-            {sent ? (
-              <p className="success-note">
-                Message captured for demo. Connect this form to email or CRM next.
-              </p>
-            ) : null}
+            {sent ? <p className="success-note">{dictionary.contact.success}</p> : null}
           </form>
         </ViewportReveal>
       </div>

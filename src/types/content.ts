@@ -1,4 +1,4 @@
-export type Locale = "uz" | "ru" | "en" | "tg";
+export type Locale = "uz" | "ru" | "en";
 
 export type Product = {
   id: string;
@@ -30,8 +30,19 @@ export type NewsItem = {
   body: Record<Locale, string>;
 };
 
+export type CollectionVideo = {
+  id: string;
+  slug: string;
+  cover: string;
+  videoUrl: string;
+  date: string;
+  title: Record<Locale, string>;
+  description: Record<Locale, string>;
+};
+
 export type ContentState = {
   products: Product[];
   gallery: GalleryItem[];
   news: NewsItem[];
+  collections: CollectionVideo[];
 };

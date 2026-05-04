@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
-import { createGalleryItem } from "@/lib/content-store";
+import { createCollectionVideo } from "@/lib/content-store";
 import { isSupabaseWriteConfigured } from "@/lib/env";
-import { insertGalleryItem } from "@/lib/site-content";
+import { insertCollectionVideo } from "@/lib/site-content";
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest(request))) {
@@ -21,25 +21,27 @@ export async function POST(request: Request) {
 
   try {
     const payload = (await request.json()) as {
-      image?: string;
+      cover?: string;
+      videoUrl?: string;
       title?: string;
-      location?: string;
       description?: string;
+      date?: string;
     };
 
-    const item = createGalleryItem({
-      image: payload.image ?? "",
+    const item = createCollectionVideo({
+      cover: payload.cover ?? "",
+      videoUrl: payload.videoUrl ?? "",
       title: payload.title ?? "",
-      location: payload.location ?? "",
       description: payload.description ?? "",
+      date: payload.date ?? new Date().toISOString().slice(0, 10),
     });
 
-    await insertGalleryItem(item);
+    await insertCollectionVideo(item);
 
     return NextResponse.json({ item });
   } catch {
     return NextResponse.json(
-      { message: "Unable to save gallery item to Supabase." },
+      { message: "Unable to save collection video to Supabase." },
       { status: 500 },
     );
   }

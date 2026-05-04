@@ -58,7 +58,7 @@ export function HomePage() {
         <ViewportReveal className="container split-card">
           <div>
             <p className="section-kicker">{dictionary.home.aboutTitle}</p>
-            <h2>Tradition woven into a modern silhouette.</h2>
+            <h2>{dictionary.home.aboutHeadline}</h2>
           </div>
           <p className="lead-text">{dictionary.home.aboutText}</p>
         </ViewportReveal>
@@ -69,7 +69,7 @@ export function HomePage() {
           <div className="section-heading">
             <div>
               <p className="section-kicker">{dictionary.home.featuredTitle}</p>
-              <h2>Signature pieces for fashion and interiors</h2>
+              <h2>{dictionary.home.featuredHeadline}</h2>
             </div>
             <Link href={`/${locale}/catalog`} className="inline-link">
               {dictionary.cta.viewCollection}
@@ -107,8 +107,43 @@ export function HomePage() {
         <ViewportReveal className="container">
           <div className="section-heading">
             <div>
+              <p className="section-kicker">{dictionary.home.collectionsTitle}</p>
+              <h2>{dictionary.home.collectionsHeadline}</h2>
+            </div>
+            <Link href={`/${locale}/collections`} className="inline-link">
+              {dictionary.cta.exploreCollections}
+            </Link>
+          </div>
+          <div className="collection-grid collection-grid--preview">
+            {content.collections.slice(0, 2).map((item, index) => (
+              <ViewportReveal className="collection-card" key={item.id} delay={index * 90}>
+                <div className="collection-video-frame">
+                  <Image
+                    src={item.cover}
+                    alt={item.title[locale]}
+                    fill
+                    className="art-image"
+                    sizes="(max-width: 760px) 100vw, 50vw"
+                  />
+                  <span className="play-badge">{dictionary.collections.watch}</span>
+                </div>
+                <div className="collection-copy">
+                  <span className="news-date">{item.date}</span>
+                  <h3>{item.title[locale]}</h3>
+                  <p>{item.description[locale]}</p>
+                </div>
+              </ViewportReveal>
+            ))}
+          </div>
+        </ViewportReveal>
+      </section>
+
+      <section className="section">
+        <ViewportReveal className="container">
+          <div className="section-heading">
+            <div>
               <p className="section-kicker">{dictionary.home.galleryTitle}</p>
-              <h2>Atmosphere, process, and cultural presence</h2>
+              <h2>{dictionary.home.galleryHeadline}</h2>
             </div>
             <Link href={`/${locale}/gallery`} className="inline-link">
               {dictionary.cta.exploreGallery}
@@ -138,7 +173,7 @@ export function HomePage() {
         <ViewportReveal className="container stats-band">
           <div>
             <p className="section-kicker">{dictionary.home.statsTitle}</p>
-            <h2>Luxury storytelling shaped for a global audience.</h2>
+            <h2>{dictionary.home.statsHeadline}</h2>
           </div>
           <div className="stats-grid">
             {dictionary.home.stats.map((stat) => (
@@ -156,7 +191,7 @@ export function HomePage() {
           <div className="section-heading">
             <div>
               <p className="section-kicker">{dictionary.home.newsTitle}</p>
-              <h2>Latest stories from IKAT</h2>
+              <h2>{dictionary.home.newsHeadline}</h2>
             </div>
             <Link href={`/${locale}/news`} className="inline-link">
               {dictionary.cta.readNews}

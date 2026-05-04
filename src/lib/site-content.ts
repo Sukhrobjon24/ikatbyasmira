@@ -1,7 +1,14 @@
 import { initialContent } from "@/data/site";
 import { isSupabaseConfigured, isSupabaseWriteConfigured } from "@/lib/env";
 import { createSupabasePublicClient, createSupabaseServiceClient } from "@/lib/supabase";
-import type { ContentState, GalleryItem, Locale, NewsItem, Product } from "@/types/content";
+import type {
+  CollectionVideo,
+  ContentState,
+  GalleryItem,
+  Locale,
+  NewsItem,
+  Product,
+} from "@/types/content";
 
 type SiteMode = "demo" | "supabase-readonly" | "supabase";
 
@@ -37,6 +44,16 @@ type NewsRow = {
   body: LocalizedRecord;
 };
 
+type CollectionRow = {
+  id: string;
+  slug: string;
+  cover: string;
+  video_url: string;
+  date: string;
+  title: LocalizedRecord;
+  description: LocalizedRecord;
+};
+
 export async function getSiteContent(): Promise<{
   content: ContentState;
   mode: SiteMode;
@@ -59,6 +76,11 @@ export async function getSiteContent(): Promise<{
       supabase.from("news_posts").select("*").order("date", { ascending: false }),
     ]);
 
+    const collectionsResult = await supabase
+      .from("collection_videos")
+      .select("*")
+      .order("date", { ascending: false });
+
     if (productsResult.error || galleryResult.error || newsResult.error) {
       throw new Error("Supabase content fetch failed.");
     }
@@ -68,6 +90,9 @@ export async function getSiteContent(): Promise<{
         products: (productsResult.data ?? []).map(mapProductRow),
         gallery: (galleryResult.data ?? []).map(mapGalleryRow),
         news: (newsResult.data ?? []).map(mapNewsRow),
+        collections: collectionsResult.error
+          ? initialContent.collections
+          : (collectionsResult.data ?? []).map(mapCollectionRow),
       },
       mode: isSupabaseWriteConfigured ? "supabase" : "supabase-readonly",
     };
@@ -111,6 +136,18 @@ export async function insertNewsItem(item: NewsItem) {
   }
 }
 
+export async function insertCollectionVideo(item: CollectionVideo) {
+  const supabase = createSupabaseServiceClient();
+
+  const { error } = await supabase
+    .from("collection_videos")
+    .insert(toCollectionRow(item));
+
+  if (error) {
+    throw error;
+  }
+}
+
 function mapProductRow(row: ProductRow): Product {
   return {
     id: row.id,
@@ -147,6 +184,18 @@ function mapNewsRow(row: NewsRow): NewsItem {
   };
 }
 
+function mapCollectionRow(row: CollectionRow): CollectionVideo {
+  return {
+    id: row.id,
+    slug: row.slug,
+    cover: row.cover,
+    videoUrl: row.video_url,
+    date: row.date,
+    title: row.title,
+    description: row.description,
+  };
+}
+
 function toProductRow(product: Product) {
   return {
     id: product.id,
@@ -180,5 +229,17 @@ function toNewsRow(item: NewsItem) {
     title: item.title,
     excerpt: item.excerpt,
     body: item.body,
+  };
+}
+
+function toCollectionRow(item: CollectionVideo) {
+  return {
+    id: item.id,
+    slug: item.slug,
+    cover: item.cover,
+    video_url: item.videoUrl,
+    date: item.date,
+    title: item.title,
+    description: item.description,
   };
 }

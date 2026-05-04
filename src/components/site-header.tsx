@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { localeLabels, locales } from "@/lib/i18n";
+import { getWhatsAppUrl, socialLinks } from "@/lib/social";
 import type { Locale } from "@/types/content";
 import { useSiteContent } from "./content-provider";
 
@@ -17,10 +18,17 @@ export function SiteHeader() {
     { href: `/${locale}`, label: dictionary.nav.home },
     { href: `/${locale}/about`, label: dictionary.nav.about },
     { href: `/${locale}/catalog`, label: dictionary.nav.catalog },
+    { href: `/${locale}/collections`, label: dictionary.nav.collections },
     { href: `/${locale}/gallery`, label: dictionary.nav.gallery },
     { href: `/${locale}/news`, label: dictionary.nav.news },
     { href: `/${locale}/contact`, label: dictionary.nav.contact },
-    { href: `/${locale}/admin`, label: dictionary.nav.admin },
+  ];
+
+  const quickLinks = [
+    { href: getWhatsAppUrl(), label: dictionary.ui.whatsapp },
+    { href: socialLinks.telegram, label: dictionary.ui.telegram },
+    { href: socialLinks.instagram, label: dictionary.ui.instagram },
+    { href: socialLinks.maps, label: dictionary.ui.location },
   ];
 
   useEffect(() => {
@@ -147,22 +155,11 @@ export function SiteHeader() {
             </div>
 
             <div className="mobile-quick-links">
-              <a href="https://wa.me/998901234567" target="_blank" rel="noreferrer">
-                {dictionary.ui.whatsapp}
-              </a>
-              <a href="https://t.me/ikatbyasmira" target="_blank" rel="noreferrer">
-                {dictionary.ui.telegram}
-              </a>
-              <a href="https://instagram.com/ikatbyasmira" target="_blank" rel="noreferrer">
-                {dictionary.ui.instagram}
-              </a>
-              <a
-                href="https://maps.google.com/?q=Samarkand%2C%20Uzbekistan"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {dictionary.ui.location}
-              </a>
+              {quickLinks.map((link) => (
+                <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
         </div>

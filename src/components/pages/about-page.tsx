@@ -21,7 +21,7 @@ export function AboutPage() {
           </div>
           <div className="value-card">
             <p className="section-kicker">IKAT</p>
-            <h2>Craftsmanship as cultural memory</h2>
+            <h2>{dictionary.about.valueHeadline}</h2>
             <ul className="value-list">
               {dictionary.about.values.map((value) => (
                 <li key={value}>{value}</li>

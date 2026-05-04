@@ -24,18 +24,40 @@ export async function generateMetadata({
   }
 
   const dictionary = dictionaries[locale as Locale];
+  const canonicalPath = `/${locale}`;
 
   return {
     title: dictionary.meta.title,
     description: dictionary.meta.description,
     alternates: {
-      canonical: `/${locale}`,
+      canonical: canonicalPath,
       languages: {
         uz: "/uz",
         ru: "/ru",
         en: "/en",
-        tg: "/tg",
       },
+    },
+    openGraph: {
+      title: dictionary.meta.title,
+      description: dictionary.meta.description,
+      url: canonicalPath,
+      siteName: "IKAT",
+      locale: locale === "ru" ? "ru_RU" : locale === "uz" ? "uz_UZ" : "en_US",
+      type: "website",
+      images: [
+        {
+          url: "/uploads/ikat/look-09.jpg",
+          width: 1200,
+          height: 1600,
+          alt: "IKAT premium silk collection",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dictionary.meta.title,
+      description: dictionary.meta.description,
+      images: ["/uploads/ikat/look-09.jpg"],
     },
   };
 }

@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
+import { isAdminRequest } from "@/lib/admin-auth";
 import { createNewsItem } from "@/lib/content-store";
 import { isSupabaseWriteConfigured } from "@/lib/env";
 import { insertNewsItem } from "@/lib/site-content";
 
 export async function POST(request: Request) {
+  if (!(await isAdminRequest(request))) {
+    return NextResponse.json({ message: "Admin authentication required." }, { status: 401 });
+  }
+
   if (!isSupabaseWriteConfigured) {
     return NextResponse.json(
       {

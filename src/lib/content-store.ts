@@ -1,4 +1,10 @@
-import type { ContentState, GalleryItem, NewsItem, Product } from "@/types/content";
+import type {
+  CollectionVideo,
+  ContentState,
+  GalleryItem,
+  NewsItem,
+  Product,
+} from "@/types/content";
 
 const STORAGE_KEY = "ikat-content-store";
 
@@ -42,9 +48,13 @@ export function mergeContent(
   stored: Partial<ContentState>,
 ): ContentState {
   return {
-    products: [...(stored.products ?? []), ...defaults.products],
-    gallery: [...(stored.gallery ?? []), ...defaults.gallery],
-    news: [...(stored.news ?? []), ...defaults.news],
+    products: [...normalizeProducts(stored.products ?? []), ...defaults.products],
+    gallery: [...normalizeGallery(stored.gallery ?? []), ...defaults.gallery],
+    news: [...normalizeNews(stored.news ?? []), ...defaults.news],
+    collections: [
+      ...normalizeCollections(stored.collections ?? []),
+      ...defaults.collections,
+    ],
   };
 }
 
@@ -56,33 +66,31 @@ export function createProduct(input: {
   description: string;
   price: string;
 }): Product {
+  const name = input.name || "New IKAT Product";
+
   return {
     id: crypto.randomUUID(),
-    slug: slugify(input.name),
+    slug: slugify(name) || crypto.randomUUID(),
     image: input.image || "/products/product-1.svg",
     name: {
-      uz: input.name,
-      ru: input.name,
-      en: input.name,
-      tg: input.name,
+      uz: name,
+      ru: name,
+      en: name,
     },
     category: {
       uz: input.category,
       ru: input.category,
       en: input.category,
-      tg: input.category,
     },
     shortDescription: {
       uz: input.shortDescription,
       ru: input.shortDescription,
       en: input.shortDescription,
-      tg: input.shortDescription,
     },
     description: {
       uz: input.description,
       ru: input.description,
       en: input.description,
-      tg: input.description,
     },
     price: input.price,
     tags: ["New", "Admin"],
@@ -102,19 +110,16 @@ export function createGalleryItem(input: {
       uz: input.title,
       ru: input.title,
       en: input.title,
-      tg: input.title,
     },
     location: {
       uz: input.location,
       ru: input.location,
       en: input.location,
-      tg: input.location,
     },
     description: {
       uz: input.description,
       ru: input.description,
       en: input.description,
-      tg: input.description,
     },
   };
 }
@@ -126,28 +131,101 @@ export function createNewsItem(input: {
   body: string;
   date: string;
 }): NewsItem {
+  const title = input.title || "IKAT update";
+
   return {
     id: crypto.randomUUID(),
-    slug: slugify(input.title),
+    slug: slugify(title) || crypto.randomUUID(),
     cover: input.image || "/news/news-1.svg",
     date: input.date,
     title: {
-      uz: input.title,
-      ru: input.title,
-      en: input.title,
-      tg: input.title,
+      uz: title,
+      ru: title,
+      en: title,
     },
     excerpt: {
       uz: input.excerpt,
       ru: input.excerpt,
       en: input.excerpt,
-      tg: input.excerpt,
     },
     body: {
       uz: input.body,
       ru: input.body,
       en: input.body,
-      tg: input.body,
     },
+  };
+}
+
+export function createCollectionVideo(input: {
+  cover: string;
+  videoUrl: string;
+  title: string;
+  description: string;
+  date: string;
+}): CollectionVideo {
+  const title = input.title || "New IKAT Collection";
+
+  return {
+    id: crypto.randomUUID(),
+    slug: slugify(title) || crypto.randomUUID(),
+    cover: input.cover || "/uploads/ikat/look-09.jpg",
+    videoUrl: input.videoUrl,
+    date: input.date,
+    title: {
+      uz: title,
+      ru: title,
+      en: title,
+    },
+    description: {
+      uz: input.description,
+      ru: input.description,
+      en: input.description,
+    },
+  };
+}
+
+function normalizeProducts(products: Product[]): Product[] {
+  return products.map((product) => ({
+    ...product,
+    name: pickLocales(product.name),
+    category: pickLocales(product.category),
+    shortDescription: pickLocales(product.shortDescription),
+    description: pickLocales(product.description),
+  }));
+}
+
+function normalizeGallery(items: GalleryItem[]): GalleryItem[] {
+  return items.map((item) => ({
+    ...item,
+    title: pickLocales(item.title),
+    location: pickLocales(item.location),
+    description: pickLocales(item.description),
+  }));
+}
+
+function normalizeNews(items: NewsItem[]): NewsItem[] {
+  return items.map((item) => ({
+    ...item,
+    title: pickLocales(item.title),
+    excerpt: pickLocales(item.excerpt),
+    body: pickLocales(item.body),
+  }));
+}
+
+function normalizeCollections(items: CollectionVideo[]): CollectionVideo[] {
+  return items.map((item) => ({
+    ...item,
+    title: pickLocales(item.title),
+    description: pickLocales(item.description),
+  }));
+}
+
+function pickLocales(record: Record<string, string>) {
+  const fallback = record.uz ?? record.en ?? record.ru ?? "";
+
+  return {
+    uz: record.uz ?? fallback,
+    ru: record.ru ?? fallback,
+    en: record.en ?? fallback,
   };
 }

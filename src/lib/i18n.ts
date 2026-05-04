@@ -1,12 +1,11 @@
 import type { Locale } from "@/types/content";
 
-export const locales: Locale[] = ["uz", "ru", "en", "tg"];
+export const locales: Locale[] = ["uz", "ru", "en"];
 
 export const localeLabels: Record<Locale, string> = {
   uz: "UZ",
   ru: "RU",
   en: "EN",
-  tg: "TJ",
 };
 
 export const dictionaries = {
@@ -14,13 +13,14 @@ export const dictionaries = {
     meta: {
       title: "IKAT",
       description:
-        "O'zbekistonning haqiqiy ikat merosi, qo'lda yaratilgan ipak va zamonaviy hashamat uyg'unligi.",
+        "O'zbekiston ikat merosi, qo'lda ishlangan ipak va zamonaviy premium moda haqida ko'p tilli katalog.",
     },
     brandLine: "Meros va hashamat uyg'unligi",
     nav: {
       home: "Bosh sahifa",
       about: "IKAT haqida",
       catalog: "Katalog",
+      collections: "Kolleksiyalar",
       gallery: "Galereya",
       news: "Yangiliklar",
       contact: "Aloqa",
@@ -28,8 +28,9 @@ export const dictionaries = {
     },
     cta: {
       viewCollection: "Kolleksiyani ko'rish",
-      contactOrder: "WhatsApp yoki Telegram orqali buyurtma",
+      contactOrder: "WhatsApp yoki Telegram orqali buyurtma bering",
       discoverStory: "Hikoyani o'qish",
+      exploreCollections: "Kolleksiyalarni ko'rish",
       exploreGallery: "Galereyani ko'rish",
       readNews: "Yangiliklarni o'qish",
       contactUs: "Bog'lanish",
@@ -41,24 +42,32 @@ export const dictionaries = {
       telegram: "Telegram",
       instagram: "Instagram",
       location: "Lokatsiya",
+      logout: "Chiqish",
     },
     hero: {
       eyebrow: "Samarqanddan dunyoga",
       title: "Authentic IKAT from Uzbekistan",
       description:
-        "Qo'lda to'qilgan ipak, boy ranglar va asrlar davomida saqlangan hunarmandchilik an'anasi zamonaviy uslub bilan uchrashadi.",
+        "Qo'lda bo'yalgan ipak, chuqur ranglar va asrlar davomida saqlangan hunarmandchilik an'anasi zamonaviy premium uslub bilan uchrashadi.",
     },
     home: {
       aboutTitle: "IKAT nima?",
+      aboutHeadline: "An'ana zamonaviy siluetga to'qilgan.",
       aboutText:
-        "IKAT bu bo'yoq va to'quv jarayonida naqsh yaratiladigan noyob mato san'ati. Har bir parcha ustalarning sabri, sezgisi va madaniy xotirasini olib yuradi.",
+        "IKAT - naqsh to'qishdan oldin ipda yaratiladigan noyob mato san'ati. Har bir parcha ustalarning sabri, sezgisi va madaniy xotirasini olib yuradi.",
       featuredTitle: "Tanlangan mahsulotlar",
+      featuredHeadline: "Moda va interyer uchun signature buyumlar",
       galleryTitle: "Galereya old ko'rinishi",
+      galleryHeadline: "Muhit, jarayon va madaniy ishtirok",
+      collectionsTitle: "Video kolleksiyalar",
+      collectionsHeadline: "Yangi kolleksiyalar harakat va mato ritmida",
       newsTitle: "So'nggi yangiliklar",
+      newsHeadline: "IKAT olamidan so'nggi hikoyalar",
       statsTitle: "Har bir detalda qadriyat",
+      statsHeadline: "Global auditoriya uchun premium hikoya.",
       stats: [
         { value: "100%", label: "Qo'lda ishlangan kolleksiya" },
-        { value: "4", label: "Sayt tili" },
+        { value: "3", label: "Sayt tili" },
         { value: "∞", label: "Madaniy ilhom" },
       ],
     },
@@ -66,15 +75,16 @@ export const dictionaries = {
       title: "IKAT hikoyasi",
       intro:
         "Ikat nafaqat mato, balki xotira, mehnat va avloddan avlodga o'tgan estetik qarashdir.",
+      valueHeadline: "Hunarmandchilik madaniy xotira sifatida",
       paragraphs: [
-        "Har bir ipak ipi oldindan bo'yaladi, keyin esa naqshlar nozik hisob-kitob bilan uyg'unlashtiriladi. Shu sababli ikatdagi yumshoq o'tishlar tirik san'at kabi ko'rinadi.",
+        "Har bir ipak ipi oldindan bo'yaladi, keyin naqshlar nozik hisob-kitob bilan uyg'unlashtiriladi. Shu sababli ikatdagi yumshoq o'tishlar tirik san'at kabi ko'rinadi.",
         "Samarqand va butun O'zbekiston hududida ikat to'quvchilari ranglar orqali tarix, tabiat va oilaviy qadriyatlarni ifoda etib kelgan.",
         "IKAT brendi bu merosni zamonaviy kolleksiya, interyer va eksklyuziv buyumlar orqali yangi auditoriyaga taqdim etadi.",
       ],
       values: [
         "Haqiqiy qo'l mehnati",
         "Madaniy qadriyat va kelib chiqish",
-        "Zamonaviy premium estetikasi",
+        "Zamonaviy premium estetika",
       ],
     },
     catalog: {
@@ -83,11 +93,19 @@ export const dictionaries = {
         "Premium kolleksiyalar, dekor matolari va eksklyuziv buyumlar bir sahifada.",
       filterLabel: "Asosiy mahsulotlar",
       priceLabel: "Narx",
+      notFoundTitle: "Mahsulot topilmadi",
+      notFoundText: "Bu mahsulot hozirgi katalog ko'rinishida mavjud emas.",
     },
     gallery: {
       title: "Ko'rgazmalar va jarayonlar",
       subtitle:
         "Madaniy tadbirlar, atelier lahzalari va ikat yaratilishining nafis bosqichlari.",
+    },
+    collections: {
+      title: "Video kolleksiyalar",
+      subtitle:
+        "Yangi kolleksiyalar, backstage lavhalar va podium hikoyalari video formatida.",
+      watch: "Videoni ko'rish",
     },
     news: {
       title: "Yangiliklar va maqolalar",
@@ -98,6 +116,10 @@ export const dictionaries = {
       title: "Biz bilan bog'laning",
       subtitle:
         "Hamkorlik, buyurtma yoki kolleksiya bo'yicha savollaringiz uchun murojaat qiling.",
+      phone: "Telefon",
+      email: "Email",
+      location: "Samarqand, O'zbekiston",
+      success: "Xabar demo rejimida qabul qilindi. Keyingi bosqichda formani email yoki CRM bilan ulash mumkin.",
       form: {
         name: "Ismingiz",
         phone: "Telefon",
@@ -108,11 +130,19 @@ export const dictionaries = {
     admin: {
       title: "Admin panel",
       subtitle:
-        "Mahsulotlar, galereya va yangiliklarni demo rejimida boshqarish uchun tezkor panel.",
+        "Faqat bitta admin uchun mahsulotlar, video kolleksiyalar, galereya va yangiliklarni boshqarish paneli.",
       products: "Mahsulot qo'shish",
       gallery: "Galereya rasmi qo'shish",
       news: "Yangilik qo'shish",
+      collections: "Video kolleksiya qo'shish",
       note: "Saqlangan ma'lumotlar brauzer localStorage ichida turadi.",
+      loginTitle: "Admin kirish",
+      loginSubtitle: "Panelga kirish uchun admin email va parolni kiriting.",
+      email: "Email",
+      password: "Parol",
+      signIn: "Kirish",
+      signingIn: "Kirish tekshirilmoqda...",
+      logout: "Admin sessiyadan chiqish",
     },
     footer: {
       text: "IKAT. O'zbek ipak merosining premium ifodasi.",
@@ -122,13 +152,14 @@ export const dictionaries = {
     meta: {
       title: "IKAT",
       description:
-        "Подлинный узбекский икат, ручной шелк и современная роскошь в одном пространстве.",
+        "Многоязычный каталог IKAT: узбекское наследие, шелк ручной работы и современная премиальная мода.",
     },
     brandLine: "Наследие в языке роскоши",
     nav: {
       home: "Главная",
-      about: "Об IKAT",
+      about: "О IKAT",
       catalog: "Каталог",
+      collections: "Коллекции",
       gallery: "Галерея",
       news: "Новости",
       contact: "Контакты",
@@ -136,8 +167,9 @@ export const dictionaries = {
     },
     cta: {
       viewCollection: "Смотреть коллекцию",
-      contactOrder: "Связаться через WhatsApp или Telegram",
+      contactOrder: "Заказать через WhatsApp или Telegram",
       discoverStory: "История бренда",
+      exploreCollections: "Смотреть коллекции",
       exploreGallery: "Открыть галерею",
       readNews: "Читать новости",
       contactUs: "Связаться",
@@ -149,35 +181,44 @@ export const dictionaries = {
       telegram: "Telegram",
       instagram: "Instagram",
       location: "Локация",
+      logout: "Выйти",
     },
     hero: {
       eyebrow: "Из Самарканда в мир",
       title: "Authentic IKAT from Uzbekistan",
       description:
-        "Ручной шелк, глубокие цвета и ремесленная традиция, которая соединяет культурное наследие с современной модой.",
+        "Шелк ручного окрашивания, глубокие цвета и многовековая ремесленная традиция в современном премиальном образе.",
     },
     home: {
       aboutTitle: "Что такое IKAT?",
+      aboutHeadline: "Традиция, вплетенная в современный силуэт.",
       aboutText:
-        "IKAT — это уникальная текстильная техника, где рисунок рождается еще до ткачества. В каждом изделии чувствуется рука мастера и культурная память региона.",
+        "IKAT - редкое текстильное искусство, где узор рождается на нити еще до ткачества. Каждое изделие хранит терпение мастера, интуицию и культурную память региона.",
       featuredTitle: "Избранные изделия",
-      galleryTitle: "Предпросмотр галереи",
+      featuredHeadline: "Signature-предметы для моды и интерьера",
+      galleryTitle: "Галерея",
+      galleryHeadline: "Атмосфера, процесс и культурное присутствие",
+      collectionsTitle: "Видео коллекции",
+      collectionsHeadline: "Новые коллекции в движении, фактуре и ритме ткани",
       newsTitle: "Последние новости",
+      newsHeadline: "Свежие истории из мира IKAT",
       statsTitle: "Ценность в каждой детали",
+      statsHeadline: "Премиальная история для глобальной аудитории.",
       stats: [
-        { value: "100%", label: "Ручная коллекция" },
-        { value: "4", label: "Языка сайта" },
+        { value: "100%", label: "Коллекция ручной работы" },
+        { value: "3", label: "Языка сайта" },
         { value: "∞", label: "Культурное вдохновение" },
       ],
     },
     about: {
       title: "История IKAT",
       intro:
-        "Икат — это не просто ткань, а память, труд и эстетика, передаваемые из поколения в поколение.",
+        "Икат - это не просто ткань, а память, труд и эстетика, передаваемые из поколения в поколение.",
+      valueHeadline: "Мастерство как культурная память",
       paragraphs: [
-        "Каждая шелковая нить окрашивается заранее, а затем переплетается так, чтобы узор словно дышал и жил внутри ткани.",
-        "В Самарканде и по всему Узбекистану мастера икат веками выражали через цвет историю, природу и семейные ценности.",
-        "Бренд IKAT переосмысляет это наследие для современной аудитории через коллекции одежды, интерьера и эксклюзивных изделий.",
+        "Каждая шелковая нить окрашивается заранее, а затем соединяется с высокой точностью, поэтому мягкий ритм иката выглядит живым и почти живописным.",
+        "В Самарканде и по всему Узбекистану мастера иката веками выражали через цвет историю, природу и семейные ценности.",
+        "Бренд IKAT переводит это наследие на современный язык через коллекции одежды, интерьерный текстиль и эксклюзивные изделия.",
       ],
       values: [
         "Подлинная ручная работа",
@@ -186,26 +227,38 @@ export const dictionaries = {
       ],
     },
     catalog: {
-      title: "Главный каталог",
+      title: "Основной каталог",
       subtitle:
         "Премиальные коллекции, декоративные ткани и эксклюзивные изделия в одном пространстве.",
       filterLabel: "Основные изделия",
       priceLabel: "Цена",
+      notFoundTitle: "Товар не найден",
+      notFoundText: "Этот товар сейчас недоступен в текущем каталоге.",
     },
     gallery: {
       title: "Выставки и процессы",
       subtitle:
-        "Культурные события, моменты из ателье и тонкие этапы рождения иката.",
+        "Культурные события, моменты из ателье и тонкие этапы создания иката.",
+    },
+    collections: {
+      title: "Видео коллекции",
+      subtitle:
+        "Новые коллекции, backstage-истории и моменты подиума в видеоформате.",
+      watch: "Смотреть видео",
     },
     news: {
-      title: "Новости и статьи",
+      title: "Новости и журнал",
       subtitle:
         "Следите за выставками, новыми коллекциями и обновлениями бренда.",
     },
     contact: {
-      title: "Свяжитесь с нами",
+      title: "Свяжитесь с IKAT",
       subtitle:
-        "Обсудим сотрудничество, заказ или вопросы по коллекциям.",
+        "Напишите нам по вопросам сотрудничества, индивидуальных заказов или коллекций.",
+      phone: "Телефон",
+      email: "Email",
+      location: "Самарканд, Узбекистан",
+      success: "Сообщение принято в демо-режиме. На следующем этапе форму можно подключить к email или CRM.",
       form: {
         name: "Ваше имя",
         phone: "Телефон",
@@ -216,11 +269,19 @@ export const dictionaries = {
     admin: {
       title: "Админ-панель",
       subtitle:
-        "Быстрая демо-панель для управления товарами, галереей и новостями.",
+        "Защищенная панель для одного администратора: товары, видео коллекции, галерея и новости.",
       products: "Добавить товар",
-      gallery: "Добавить фото в галерею",
+      gallery: "Добавить фото",
       news: "Добавить новость",
+      collections: "Добавить видео коллекции",
       note: "Данные сохраняются в localStorage браузера.",
+      loginTitle: "Вход администратора",
+      loginSubtitle: "Введите email и пароль администратора, чтобы открыть панель.",
+      email: "Email",
+      password: "Пароль",
+      signIn: "Войти",
+      signingIn: "Проверяем доступ...",
+      logout: "Завершить админ-сессию",
     },
     footer: {
       text: "IKAT. Премиальное выражение шелкового наследия Узбекистана.",
@@ -230,13 +291,14 @@ export const dictionaries = {
     meta: {
       title: "IKAT",
       description:
-        "Authentic Uzbek ikat, handmade silk, and a luxurious multilingual digital experience.",
+        "A multilingual IKAT catalog for Uzbek heritage, handmade silk, premium fashion, gallery stories, and client-ready product presentation.",
     },
     brandLine: "Heritage translated into luxury",
     nav: {
       home: "Home",
       about: "About",
       catalog: "Catalog",
+      collections: "Collections",
       gallery: "Gallery",
       news: "News",
       contact: "Contact",
@@ -244,8 +306,9 @@ export const dictionaries = {
     },
     cta: {
       viewCollection: "View Collection",
-      contactOrder: "Contact / Order via WhatsApp or Telegram",
+      contactOrder: "Order via WhatsApp or Telegram",
       discoverStory: "Discover the Story",
+      exploreCollections: "Explore Collections",
       exploreGallery: "Explore Gallery",
       readNews: "Read News",
       contactUs: "Contact Us",
@@ -257,6 +320,7 @@ export const dictionaries = {
       telegram: "Telegram",
       instagram: "Instagram",
       location: "Location",
+      logout: "Log out",
     },
     hero: {
       eyebrow: "From Samarkand to the world",
@@ -266,15 +330,22 @@ export const dictionaries = {
     },
     home: {
       aboutTitle: "What is IKAT?",
+      aboutHeadline: "Tradition woven into a modern silhouette.",
       aboutText:
         "IKAT is a rare textile art where the pattern is created before weaving begins. Every piece carries the patience, instinct, and cultural memory of master artisans.",
       featuredTitle: "Featured Products",
+      featuredHeadline: "Signature pieces for fashion and interiors",
       galleryTitle: "Gallery Preview",
+      galleryHeadline: "Atmosphere, process, and cultural presence",
+      collectionsTitle: "Video Collections",
+      collectionsHeadline: "New collections told through movement and textile rhythm",
       newsTitle: "Latest News",
+      newsHeadline: "Latest stories from IKAT",
       statsTitle: "Value in every detail",
+      statsHeadline: "Luxury storytelling shaped for a global audience.",
       stats: [
         { value: "100%", label: "Handmade collection" },
-        { value: "4", label: "Website languages" },
+        { value: "3", label: "Website languages" },
         { value: "∞", label: "Cultural inspiration" },
       ],
     },
@@ -282,6 +353,7 @@ export const dictionaries = {
       title: "The IKAT Story",
       intro:
         "Ikat is not only fabric. It is memory, labor, and beauty carried across generations.",
+      valueHeadline: "Craftsmanship as cultural memory",
       paragraphs: [
         "Each silk thread is dyed in advance and then aligned with extraordinary precision, giving ikat its signature blurred rhythm and painterly soul.",
         "Across Samarkand and Uzbekistan, weavers have long translated history, nature, and family values into color-rich woven narratives.",
@@ -299,11 +371,19 @@ export const dictionaries = {
         "Premium collections, statement textiles, and exclusive pieces curated in one place.",
       filterLabel: "Signature products",
       priceLabel: "Price",
+      notFoundTitle: "Product not found",
+      notFoundText: "This product is not available in the current catalog view.",
     },
     gallery: {
       title: "Exhibitions and Process",
       subtitle:
         "Moments from exhibitions, atelier rituals, and the poetic stages of ikat making.",
+    },
+    collections: {
+      title: "Video Collections",
+      subtitle:
+        "New collection films, backstage stories, and runway moments in motion.",
+      watch: "Watch Video",
     },
     news: {
       title: "News and Journal",
@@ -314,6 +394,10 @@ export const dictionaries = {
       title: "Contact IKAT",
       subtitle:
         "Reach out for collaboration, custom orders, or collection inquiries.",
+      phone: "Phone",
+      email: "Email",
+      location: "Samarkand, Uzbekistan",
+      success: "Message captured for demo. Connect this form to email or CRM next.",
       form: {
         name: "Your name",
         phone: "Phone",
@@ -324,122 +408,22 @@ export const dictionaries = {
     admin: {
       title: "Admin Panel",
       subtitle:
-        "A lightweight demo dashboard for adding products, gallery images, and news.",
+        "A one-admin protected dashboard for managing products, video collections, gallery images, and news.",
       products: "Add Product",
       gallery: "Add Gallery Item",
       news: "Add News Post",
+      collections: "Add Collection Video",
       note: "Saved items are stored in browser localStorage.",
+      loginTitle: "Admin Login",
+      loginSubtitle: "Enter the admin email and password to continue.",
+      email: "Email",
+      password: "Password",
+      signIn: "Sign in",
+      signingIn: "Checking access...",
+      logout: "End admin session",
     },
     footer: {
       text: "IKAT. A premium expression of Uzbek silk heritage.",
-    },
-  },
-  tg: {
-    meta: {
-      title: "IKAT",
-      description:
-        "Икати аслии Ӯзбекистон, абрешими дастӣ ва таҷрибаи рақамии боҳашамат.",
-    },
-    brandLine: "Мерос дар либоси ҳашамат",
-    nav: {
-      home: "Асосӣ",
-      about: "Дар бораи IKAT",
-      catalog: "Каталог",
-      gallery: "Галерея",
-      news: "Хабарҳо",
-      contact: "Тамос",
-      admin: "Админ",
-    },
-    cta: {
-      viewCollection: "Дидани коллексия",
-      contactOrder: "Тамос / Фармоиш тавассути WhatsApp ё Telegram",
-      discoverStory: "Қиссаи бренд",
-      exploreGallery: "Кушодани галерея",
-      readNews: "Хондани хабарҳо",
-      contactUs: "Тамос",
-    },
-    ui: {
-      menu: "Меню",
-      close: "Пӯшидан",
-      whatsapp: "WhatsApp",
-      telegram: "Telegram",
-      instagram: "Instagram",
-      location: "Ҷойгиршавӣ",
-    },
-    hero: {
-      eyebrow: "Аз Самарқанд ба ҷаҳон",
-      title: "Authentic IKAT from Uzbekistan",
-      description:
-        "Абрешими дастӣ, рангҳои дурахшон ва ҳунари қадимӣ дар пайвастагӣ бо услуби муосири боҳашамат.",
-    },
-    home: {
-      aboutTitle: "IKAT чист?",
-      aboutText:
-        "IKAT санъати нодири бофандагист, ки нақш пеш аз бофтан тавлид мешавад. Ҳар порча хотира, сабр ва завқи усторо дар худ нигоҳ медорад.",
-      featuredTitle: "Маҳсулоти интихобшуда",
-      galleryTitle: "Пешнамоиши галерея",
-      newsTitle: "Хабарҳои охирин",
-      statsTitle: "Арзиш дар ҳар ҷузъ",
-      stats: [
-        { value: "100%", label: "Коллексияи дастӣ" },
-        { value: "4", label: "Забони сайт" },
-        { value: "∞", label: "Илҳоми фарҳангӣ" },
-      ],
-    },
-    about: {
-      title: "Қиссаи IKAT",
-      intro:
-        "Икат танҳо матоъ нест, балки хотира, меҳнат ва зебоист, ки аз насл ба насл мегузарад.",
-      paragraphs: [
-        "Ҳар риштаи абрешим пешакӣ ранг карда мешавад ва сипас бо дақиқии баланд бофта мешавад, то нақш нафаскаш ва зинда намояд.",
-        "Дар Самарқанд ва саросари Ӯзбекистон устоён бо рангу нақш таърих, табиат ва арзишҳои хонаводагиро ифода мекарданд.",
-        "Бренди IKAT ин меросро ба забони муосири мӯд, интерьер ва маҳсулоти истисноӣ табдил медиҳад.",
-      ],
-      values: [
-        "Ҳунари аслии дастӣ",
-        "Арзиши фарҳангӣ ва маншаъ",
-        "Эстетикаи муосири премиум",
-      ],
-    },
-    catalog: {
-      title: "Каталоги асосӣ",
-      subtitle:
-        "Коллексияҳои премиум, матоъҳои ороишӣ ва ашёи истисноӣ дар як ҷой.",
-      filterLabel: "Маҳсулоти асосӣ",
-      priceLabel: "Нарх",
-    },
-    gallery: {
-      title: "Намоишгоҳҳо ва раванд",
-      subtitle:
-        "Лаҳзаҳо аз намоишгоҳҳо, устохона ва марҳилаҳои нозуки офариниши икат.",
-    },
-    news: {
-      title: "Хабарҳо ва мақолаҳо",
-      subtitle:
-        "Намоишгоҳҳо, коллексияҳои нав ва навгониҳои брендро пайгирӣ кунед.",
-    },
-    contact: {
-      title: "Бо мо тамос гиред",
-      subtitle:
-        "Барои ҳамкорӣ, фармоиш ё саволҳо дар бораи коллексияҳо муроҷиат кунед.",
-      form: {
-        name: "Номи шумо",
-        phone: "Телефон",
-        message: "Паём",
-        submit: "Фиристодан",
-      },
-    },
-    admin: {
-      title: "Панели админ",
-      subtitle:
-        "Панели сабуки демо барои иловаи маҳсулот, галерея ва хабарҳо.",
-      products: "Иловаи маҳсулот",
-      gallery: "Иловаи акс",
-      news: "Иловаи хабар",
-      note: "Маълумот дар localStorage браузер нигоҳ дошта мешавад.",
-    },
-    footer: {
-      text: "IKAT. Ифодаи премиуми мероси абрешими Ӯзбекистон.",
     },
   },
 } as const;
