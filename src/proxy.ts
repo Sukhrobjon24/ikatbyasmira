@@ -7,7 +7,7 @@ import {
 
 const PUBLIC_ADMIN_API = new Set(["/api/admin/login", "/api/admin/logout"]);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   if (pathname.startsWith("/api/admin") && !PUBLIC_ADMIN_API.has(pathname)) {
