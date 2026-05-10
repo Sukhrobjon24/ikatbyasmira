@@ -19,9 +19,10 @@ export function ContactPage() {
 
           <div className="contact-card">
             <p>
-              {dictionary.contact.phone}: +998 90 123 45 67
+              {dictionary.contact.phone}: +998 90 605 58 55
             </p>
-            <p>{dictionary.contact.email}: hello@ikatbyasmira.uz</p>
+            <p>{dictionary.contact.phone}: +998 91 555 60 31</p>
+            <p>{dictionary.contact.email}: suxrobjonurunov@gmail.com</p>
             <p>{dictionary.ui.location}: {dictionary.contact.location}</p>
             <div className="detail-actions">
               <a
