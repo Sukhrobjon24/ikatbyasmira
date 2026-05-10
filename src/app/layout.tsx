@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ikatbyasmira.uz").replace(
+  /\/$/,
+  "",
+);
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ikatbyasmira.uz"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "IKAT",
-    template: "%s | IKAT",
+    default: "IKAT by Asmira",
+    template: "%s | IKAT by Asmira",
   },
   description:
-    "Premium multilingual website for IKAT, celebrating authentic Uzbek silk heritage with modern luxury storytelling.",
+    "IKAT by Asmira is a multilingual premium catalog for authentic Uzbek ikat fabrics, handmade silk, fashion collections, gallery stories, and client orders.",
   keywords: [
-    "IKAT",
+    "IKAT by Asmira",
+    "ikatbyasmira",
     "Uzbekistan",
     "ikat fabric",
     "handmade silk",
@@ -18,11 +24,11 @@ export const metadata: Metadata = {
     "Samarqand",
   ],
   openGraph: {
-    title: "IKAT",
+    title: "IKAT by Asmira",
     description:
-      "Authentic IKAT from Uzbekistan. Heritage craftsmanship, luxurious textiles, and cultural storytelling.",
-    url: "https://ikatbyasmira.uz",
-    siteName: "IKAT",
+      "Authentic Uzbek ikat fabrics, handmade silk, premium collections, and cultural storytelling from IKAT by Asmira.",
+    url: siteUrl,
+    siteName: "IKAT by Asmira",
     locale: "en_US",
     type: "website",
   },

@@ -1,5 +1,5 @@
 export const socialLinks = {
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "998901234567",
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
   whatsappMessage:
     process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
     "Hello, I would like to learn more about IKAT collections.",

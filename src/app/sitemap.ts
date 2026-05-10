@@ -1,6 +1,9 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://www.ikatbyasmira.uz";
+const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ikatbyasmira.uz").replace(
+  /\/$/,
+  "",
+);
 const locales = ["uz", "ru", "en"];
 
 const staticPages = [

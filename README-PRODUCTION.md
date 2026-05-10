@@ -11,7 +11,7 @@ This project supports three content modes:
 Copy `.env.example` to `.env.local` for local development or configure the same values in Vercel.
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://ikatbyasmira.uz
+NEXT_PUBLIC_SITE_URL=https://www.ikatbyasmira.uz
 
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_KEY
@@ -22,7 +22,7 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=replace-with-a-strong-password
 ADMIN_SESSION_SECRET=replace-with-a-long-random-secret
 
-NEXT_PUBLIC_WHATSAPP_NUMBER=998901234567
+NEXT_PUBLIC_WHATSAPP_NUMBER=998XXXXXXXXX
 NEXT_PUBLIC_WHATSAPP_MESSAGE=Hello, I would like to learn more about IKAT collections.
 NEXT_PUBLIC_TELEGRAM_URL=https://t.me/your-channel
 NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/ikatbyasmira

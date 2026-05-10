@@ -41,7 +41,7 @@ export async function generateMetadata({
       title: dictionary.meta.title,
       description: dictionary.meta.description,
       url: canonicalPath,
-      siteName: "IKAT",
+      siteName: "IKAT by Asmira",
       locale: locale === "ru" ? "ru_RU" : locale === "uz" ? "uz_UZ" : "en_US",
       type: "website",
       images: [
