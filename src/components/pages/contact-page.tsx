@@ -62,7 +62,7 @@ export function ContactPage() {
           <div className="map-frame">
             <iframe
               title="IKAT map"
-              src="https://www.google.com/maps?q=Samarkand%2C%20Uzbekistan&z=12&output=embed"
+              src={`https://www.google.com/maps?q=39.6543668,67.0615460&z=16&output=embed`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
