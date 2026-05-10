@@ -3,7 +3,7 @@ export const socialLinks = {
   whatsappMessage:
     process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
     "Hello, I would like to learn more about IKAT collections.",
-  telegram: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? "https://t.me/ikatbyasmira",
+  telegram: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? "",
   instagram:
     process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "https://www.instagram.com/ikatbyasmira",
   maps:

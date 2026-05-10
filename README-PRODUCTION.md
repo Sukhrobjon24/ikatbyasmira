@@ -24,7 +24,7 @@ ADMIN_SESSION_SECRET=replace-with-a-long-random-secret
 
 NEXT_PUBLIC_WHATSAPP_NUMBER=998901234567
 NEXT_PUBLIC_WHATSAPP_MESSAGE=Hello, I would like to learn more about IKAT collections.
-NEXT_PUBLIC_TELEGRAM_URL=https://t.me/ikatbyasmira
+NEXT_PUBLIC_TELEGRAM_URL=https://t.me/your-channel
 NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/ikatbyasmira
 NEXT_PUBLIC_MAPS_URL=https://maps.google.com/?q=Samarkand%2C%20Uzbekistan
 ```
