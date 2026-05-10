@@ -1211,6 +1211,81 @@ textarea::placeholder {
   gap: 1rem;
 }
 
+.admin-manage {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.6rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(145deg, rgba(255, 248, 239, 0.08), rgba(255, 255, 255, 0.03)),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.admin-manage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-delete-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.admin-delete-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.admin-delete-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.7rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.admin-delete-row div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.admin-delete-row strong,
+.admin-delete-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-delete-row span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.button-danger {
+  min-height: 2.55rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 96, 0.34);
+  background: rgba(143, 61, 51, 0.14);
+  color: #ffd8cf;
+  cursor: pointer;
+}
+
+.button-danger:disabled {
+  cursor: progress;
+  opacity: 0.68;
+}
+
 .floating-actions__link {
   min-width: 7.8rem;
 }
@@ -1315,6 +1390,11 @@ textarea::placeholder {
   .admin-heading {
     grid-template-columns: 1fr;
     display: grid;
+  }
+
+  .admin-manage-grid,
+  .admin-delete-row {
+    grid-template-columns: 1fr;
   }
 
   .auth-card {

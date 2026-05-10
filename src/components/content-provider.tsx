@@ -11,9 +11,11 @@ import {
   createGalleryItem,
   createNewsItem,
   createProduct,
+  deleteStoredContentItem,
   mergeContent,
   readStoredContent,
   writeStoredContent,
+  type ContentKind,
 } from "@/lib/content-store";
 import type { Dictionary } from "@/lib/i18n";
 import type { ContentState, Locale } from "@/types/content";
@@ -31,6 +33,7 @@ type ContentContextValue = {
   addCollectionVideo: (
     input: Parameters<typeof createCollectionVideo>[0],
   ) => Promise<string>;
+  deleteContentItem: (kind: ContentKind, id: string) => Promise<string>;
 };
 
 const ContentContext = createContext<ContentContextValue | null>(null);
@@ -95,6 +98,7 @@ export function ContentProvider({
           gallery: stored.gallery ?? [],
           news: stored.news ?? [],
           collections: stored.collections ?? [],
+          deleted: stored.deleted ?? {},
         });
       }
 
@@ -138,6 +142,7 @@ export function ContentProvider({
           gallery: [item, ...(stored.gallery ?? [])],
           news: stored.news ?? [],
           collections: stored.collections ?? [],
+          deleted: stored.deleted ?? {},
         });
       }
 
@@ -181,6 +186,7 @@ export function ContentProvider({
           gallery: stored.gallery ?? [],
           news: [item, ...(stored.news ?? [])],
           collections: stored.collections ?? [],
+          deleted: stored.deleted ?? {},
         });
       }
 
@@ -224,12 +230,55 @@ export function ContentProvider({
           gallery: stored.gallery ?? [],
           news: stored.news ?? [],
           collections: [item, ...(stored.collections ?? [])],
+          deleted: stored.deleted ?? {},
         });
       }
 
       return mode === "supabase"
         ? "Collection video saved to Supabase."
         : "Collection video added to local demo content.";
+    },
+    async deleteContentItem(kind, id) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      if (mode === "supabase") {
+        const endpoint = {
+          products: "/api/admin/products",
+          gallery: "/api/admin/gallery",
+          news: "/api/admin/news",
+          collections: "/api/admin/collections",
+        }[kind];
+
+        const response = await fetch(endpoint, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to delete item.");
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        [kind]: current[kind].filter((item) => item.id !== id),
+      }));
+
+      if (mode === "demo") {
+        writeStoredContent(deleteStoredContentItem(readStoredContent(), kind, id));
+      }
+
+      return mode === "supabase"
+        ? "Item deleted from Supabase."
+        : "Item hidden from local demo content.";
     },
   };
 

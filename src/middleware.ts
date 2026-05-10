@@ -7,9 +7,8 @@ import {
 
 const PUBLIC_ADMIN_API = new Set(["/api/admin/login", "/api/admin/logout"]);
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-
 
   if (pathname.startsWith("/api/admin") && !PUBLIC_ADMIN_API.has(pathname)) {
     const session = await verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
@@ -38,7 +37,6 @@ export async function proxy(request: NextRequest) {
       url.search = "";
       return NextResponse.redirect(url);
     }
-
     return NextResponse.next();
   }
 
@@ -53,5 +51,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)",
+  ],
 };

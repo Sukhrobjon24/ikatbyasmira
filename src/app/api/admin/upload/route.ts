@@ -1,16 +1,24 @@
 import { NextResponse } from "next/server";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { appEnv, isSupabaseWriteConfigured } from "@/lib/env";
 import { createSupabaseServiceClient } from "@/lib/supabase";
 
 const MAX_IMAGE_SIZE = 8 * 1024 * 1024;
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const ALLOWED_VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/ogg"]);
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest(request))) {
     return NextResponse.json({ message: "Admin authentication required." }, { status: 401 });
+  }
+
+  const contentType = request.headers.get("content-type") ?? "";
+
+  if (contentType.includes("multipart/form-data")) {
+    return handleLocalDemoUpload(request);
   }
 
   if (!isSupabaseWriteConfigured) {
@@ -49,7 +57,7 @@ export async function POST(request: Request) {
         {
           message:
             kind === "video"
-              ? "Video must be 100MB or smaller."
+              ? "Video must be 50MB or smaller."
               : "Image must be 8MB or smaller.",
         },
         { status: 400 },
@@ -83,9 +91,67 @@ export async function POST(request: Request) {
       token: data.token,
       publicUrl,
     });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message:
+          error instanceof Error
+            ? `Unable to prepare media upload: ${error.message}`
+            : "Unable to prepare media upload.",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+async function handleLocalDemoUpload(request: Request) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get("file");
+    const kind = formData.get("kind") === "video" ? "video" : "image";
+
+    if (!(file instanceof File)) {
+      return NextResponse.json({ message: "File is required." }, { status: 400 });
+    }
+
+    const allowed = kind === "video" ? ALLOWED_VIDEO_TYPES : ALLOWED_IMAGE_TYPES;
+    const maxSize = kind === "video" ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+
+    if (!allowed.has(file.type)) {
+      return NextResponse.json(
+        { message: `Unsupported ${kind} format.` },
+        { status: 400 },
+      );
+    }
+
+    if (file.size <= 0 || file.size > maxSize) {
+      return NextResponse.json(
+        {
+          message:
+            kind === "video"
+              ? "Video must be 50MB or smaller."
+              : "Image must be 8MB or smaller.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const safeName = sanitizeName(file.name || `${kind}.${getExtension("", file.type)}`);
+    const folder = kind === "video" ? "videos" : "images";
+    const date = new Date().toISOString().slice(0, 10);
+    const relativePath = `/uploads/admin/${folder}/${date}/${crypto.randomUUID()}-${safeName}`;
+    const absolutePath = path.join(process.cwd(), "public", ...relativePath.split("/").filter(Boolean));
+
+    await mkdir(path.dirname(absolutePath), { recursive: true });
+    await writeFile(absolutePath, Buffer.from(await file.arrayBuffer()));
+
+    return NextResponse.json({
+      publicUrl: relativePath,
+      mode: "local-demo",
+    });
   } catch {
     return NextResponse.json(
-      { message: "Unable to prepare media upload." },
+      { message: "Unable to upload file in local demo mode." },
       { status: 500 },
     );
   }
@@ -103,7 +169,6 @@ async function ensurePublicBucket() {
     appEnv.supabaseMediaBucket,
     {
       public: true,
-      fileSizeLimit: `${MAX_VIDEO_SIZE}`,
       allowedMimeTypes: [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES],
     },
   );

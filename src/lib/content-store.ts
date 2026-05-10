@@ -8,6 +8,13 @@ import type {
 
 const STORAGE_KEY = "ikat-content-store";
 
+export type ContentKind = "products" | "gallery" | "news" | "collections";
+
+type DeletedContentIds = Partial<Record<ContentKind, string[]>>;
+export type StoredContent = Partial<ContentState> & {
+  deleted?: DeletedContentIds;
+};
+
 export function slugify(value: string) {
   return value
     .toLowerCase()
@@ -17,7 +24,7 @@ export function slugify(value: string) {
     .replace(/-+/g, "-");
 }
 
-export function readStoredContent(): Partial<ContentState> {
+export function readStoredContent(): StoredContent {
   if (typeof window === "undefined") {
     return {};
   }
@@ -29,13 +36,13 @@ export function readStoredContent(): Partial<ContentState> {
       return {};
     }
 
-    return JSON.parse(raw) as Partial<ContentState>;
+    return JSON.parse(raw) as StoredContent;
   } catch {
     return {};
   }
 }
 
-export function writeStoredContent(content: Partial<ContentState>) {
+export function writeStoredContent(content: StoredContent) {
   if (typeof window === "undefined") {
     return;
   }
@@ -45,16 +52,41 @@ export function writeStoredContent(content: Partial<ContentState>) {
 
 export function mergeContent(
   defaults: ContentState,
-  stored: Partial<ContentState>,
+  stored: StoredContent,
 ): ContentState {
+  const deleted = stored.deleted ?? {};
+
   return {
-    products: [...normalizeProducts(stored.products ?? []), ...defaults.products],
-    gallery: [...normalizeGallery(stored.gallery ?? []), ...defaults.gallery],
-    news: [...normalizeNews(stored.news ?? []), ...defaults.news],
+    products: [
+      ...normalizeProducts(stored.products ?? []),
+      ...defaults.products.filter((item) => !deleted.products?.includes(item.id)),
+    ],
+    gallery: [
+      ...normalizeGallery(stored.gallery ?? []),
+      ...defaults.gallery.filter((item) => !deleted.gallery?.includes(item.id)),
+    ],
+    news: [
+      ...normalizeNews(stored.news ?? []),
+      ...defaults.news.filter((item) => !deleted.news?.includes(item.id)),
+    ],
     collections: [
       ...normalizeCollections(stored.collections ?? []),
-      ...defaults.collections,
+      ...defaults.collections.filter((item) => !deleted.collections?.includes(item.id)),
     ],
+  };
+}
+
+export function deleteStoredContentItem(stored: StoredContent, kind: ContentKind, id: string) {
+  const currentItems = stored[kind] ?? [];
+  const nextDeleted = {
+    ...(stored.deleted ?? {}),
+    [kind]: Array.from(new Set([...(stored.deleted?.[kind] ?? []), id])),
+  };
+
+  return {
+    ...stored,
+    [kind]: currentItems.filter((item) => item.id !== id),
+    deleted: nextDeleted,
   };
 }
 

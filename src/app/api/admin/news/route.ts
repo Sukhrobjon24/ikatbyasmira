@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { createNewsItem } from "@/lib/content-store";
 import { isSupabaseWriteConfigured } from "@/lib/env";
-import { insertNewsItem } from "@/lib/site-content";
+import { deleteNewsItem, insertNewsItem } from "@/lib/site-content";
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest(request))) {
@@ -42,6 +42,39 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { message: "Unable to save news post to Supabase." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!(await isAdminRequest(request))) {
+    return NextResponse.json({ message: "Admin authentication required." }, { status: 401 });
+  }
+
+  if (!isSupabaseWriteConfigured) {
+    return NextResponse.json(
+      {
+        message:
+          "Supabase write access is not configured yet. Add the service role key to enable live admin writes.",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const payload = (await request.json()) as { id?: string };
+
+    if (!payload.id) {
+      return NextResponse.json({ message: "News post id is required." }, { status: 400 });
+    }
+
+    await deleteNewsItem(payload.id);
+
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json(
+      { message: "Unable to delete news post from Supabase." },
       { status: 500 },
     );
   }

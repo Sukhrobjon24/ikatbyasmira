@@ -35,6 +35,7 @@ Run `supabase/schema.sql` in the Supabase SQL editor before enabling live mode.
 The schema keeps public `anon` access read-only. Admin writes are handled only by protected server API routes using `SUPABASE_SERVICE_ROLE_KEY`.
 
 Media uploads use Supabase Storage. The protected upload route creates signed upload URLs and stores files in `SUPABASE_MEDIA_BUCKET` (`ikat-media` by default). Keep the bucket public for read access so uploaded images and videos can render on the website.
+When Supabase is not configured, local development falls back to saving admin uploads under `public/uploads/admin`. This is only for local demos; production deployments should use Supabase Storage.
 
 ## Admin security
 

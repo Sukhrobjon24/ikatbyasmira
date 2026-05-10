@@ -148,6 +148,42 @@ export async function insertCollectionVideo(item: CollectionVideo) {
   }
 }
 
+export async function deleteProduct(id: string) {
+  const supabase = createSupabaseServiceClient();
+  const { error } = await supabase.from("products").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function deleteGalleryItem(id: string) {
+  const supabase = createSupabaseServiceClient();
+  const { error } = await supabase.from("gallery_items").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function deleteNewsItem(id: string) {
+  const supabase = createSupabaseServiceClient();
+  const { error } = await supabase.from("news_posts").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function deleteCollectionVideo(id: string) {
+  const supabase = createSupabaseServiceClient();
+  const { error } = await supabase.from("collection_videos").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
 function mapProductRow(row: ProductRow): Product {
   return {
     id: row.id,
