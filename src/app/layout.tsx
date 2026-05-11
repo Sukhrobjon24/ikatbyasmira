@@ -11,10 +11,7 @@ export const revalidate = 0;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: "IKAT by Asmira | Handmade Uzbek Silk | Samarkand",
-    template: "%s",
-  },
+  title: "IKAT by Asmira | Handmade Uzbek Silk | Samarkand",
   description:
     "Handwoven ikat silk fabrics from Samarkand. Premium Uzbek textile art for modern fashion and interior design.",
   keywords: [

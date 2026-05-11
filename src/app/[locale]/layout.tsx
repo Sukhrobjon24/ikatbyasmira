@@ -8,12 +8,6 @@ import { dictionaries, locales } from "@/lib/i18n";
 import { getSiteContent } from "@/lib/site-content";
 import type { Locale } from "@/types/content";
 
-const titles: Record<string, string> = {
-  uz: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
-  ru: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
-  en: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
-};
-
 const descriptions: Record<string, string> = {
   uz: "Samarqand ustalaridan qo'lda ishlangan ikat ipak matosi. Premium o'zbek to'qimachilik san'ati — zamonaviy moda va interyer uchun.",
   ru: "Шёлковые ikat-ткани ручной работы от мастеров Самарканда. Премиум узбекское ткачество для современной моды и интерьера.",
@@ -42,11 +36,18 @@ export async function generateMetadata({
   }
 
   const canonicalPath = `/${locale}`;
-  const title = titles[locale] ?? titles["uz"];
+  // i18n dictionary'dagi title'ni override qil
+  const hardcodedTitles: Record<string, string> = {
+    uz: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
+    ru: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
+    en: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
+  };
+
+  const hardcodedTitle = hardcodedTitles[locale] ?? hardcodedTitles["uz"];
   const description = descriptions[locale] ?? descriptions["uz"];
 
   return {
-    title,
+    title: hardcodedTitle,
     description,
     keywords: keywords[locale] ?? keywords["uz"],
     other: {
@@ -61,7 +62,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title,
+      title: hardcodedTitle,
       description,
       url: canonicalPath,
       siteName: "IKAT by Asmira",
@@ -78,7 +79,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: hardcodedTitle,
       description,
       images: ["/uploads/ikat/look-09.jpg"],
     },
