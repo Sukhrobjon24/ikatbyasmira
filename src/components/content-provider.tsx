@@ -18,7 +18,14 @@ import {
   type ContentKind,
 } from "@/lib/content-store";
 import type { Dictionary } from "@/lib/i18n";
-import type { ContentState, Locale } from "@/types/content";
+import type {
+  CollectionVideo,
+  ContentState,
+  GalleryItem,
+  Locale,
+  NewsItem,
+  Product,
+} from "@/types/content";
 
 export type SiteMode = "demo" | "supabase-readonly" | "supabase";
 
@@ -69,7 +76,7 @@ export function ContentProvider({
         );
       }
 
-      const item = createProduct(input);
+      let item = createProduct(input);
 
       if (mode === "supabase") {
         const response = await fetch("/api/admin/products", {
@@ -83,6 +90,11 @@ export function ContentProvider({
         if (!response.ok) {
           const payload = (await response.json()) as { message?: string };
           throw new Error(payload.message ?? "Unable to save product.");
+        }
+
+        const payload = (await response.json()) as { item?: Product };
+        if (payload.item) {
+          item = payload.item;
         }
       }
 
@@ -113,7 +125,7 @@ export function ContentProvider({
         );
       }
 
-      const item = createGalleryItem(input);
+      let item = createGalleryItem(input);
 
       if (mode === "supabase") {
         const response = await fetch("/api/admin/gallery", {
@@ -127,6 +139,11 @@ export function ContentProvider({
         if (!response.ok) {
           const payload = (await response.json()) as { message?: string };
           throw new Error(payload.message ?? "Unable to save gallery item.");
+        }
+
+        const payload = (await response.json()) as { item?: GalleryItem };
+        if (payload.item) {
+          item = payload.item;
         }
       }
 
@@ -157,7 +174,7 @@ export function ContentProvider({
         );
       }
 
-      const item = createNewsItem(input);
+      let item = createNewsItem(input);
 
       if (mode === "supabase") {
         const response = await fetch("/api/admin/news", {
@@ -171,6 +188,11 @@ export function ContentProvider({
         if (!response.ok) {
           const payload = (await response.json()) as { message?: string };
           throw new Error(payload.message ?? "Unable to save news post.");
+        }
+
+        const payload = (await response.json()) as { item?: NewsItem };
+        if (payload.item) {
+          item = payload.item;
         }
       }
 
@@ -201,7 +223,7 @@ export function ContentProvider({
         );
       }
 
-      const item = createCollectionVideo(input);
+      let item = createCollectionVideo(input);
 
       if (mode === "supabase") {
         const response = await fetch("/api/admin/collections", {
@@ -215,6 +237,11 @@ export function ContentProvider({
         if (!response.ok) {
           const payload = (await response.json()) as { message?: string };
           throw new Error(payload.message ?? "Unable to save collection video.");
+        }
+
+        const payload = (await response.json()) as { item?: CollectionVideo };
+        if (payload.item) {
+          item = payload.item;
         }
       }
 

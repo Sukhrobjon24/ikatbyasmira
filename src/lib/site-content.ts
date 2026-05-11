@@ -150,37 +150,65 @@ export async function insertCollectionVideo(item: CollectionVideo) {
 
 export async function deleteProduct(id: string) {
   const supabase = createSupabaseServiceClient();
-  const { error } = await supabase.from("products").delete().eq("id", id);
+  const { data, error } = await supabase.from("products").delete().eq("id", id).select("id");
 
   if (error) {
     throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Product was not found in Supabase.");
   }
 }
 
 export async function deleteGalleryItem(id: string) {
   const supabase = createSupabaseServiceClient();
-  const { error } = await supabase.from("gallery_items").delete().eq("id", id);
+  const { data, error } = await supabase
+    .from("gallery_items")
+    .delete()
+    .eq("id", id)
+    .select("id");
 
   if (error) {
     throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Gallery item was not found in Supabase.");
   }
 }
 
 export async function deleteNewsItem(id: string) {
   const supabase = createSupabaseServiceClient();
-  const { error } = await supabase.from("news_posts").delete().eq("id", id);
+  const { data, error } = await supabase
+    .from("news_posts")
+    .delete()
+    .eq("id", id)
+    .select("id");
 
   if (error) {
     throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("News post was not found in Supabase.");
   }
 }
 
 export async function deleteCollectionVideo(id: string) {
   const supabase = createSupabaseServiceClient();
-  const { error } = await supabase.from("collection_videos").delete().eq("id", id);
+  const { data, error } = await supabase
+    .from("collection_videos")
+    .delete()
+    .eq("id", id)
+    .select("id");
 
   if (error) {
     throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Collection video was not found in Supabase.");
   }
 }
 
