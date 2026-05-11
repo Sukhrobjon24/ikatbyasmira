@@ -58,9 +58,9 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
 
         <p className="admin-note">
           {mode === "supabase"
-            ? `Live mode: ${adminEmail} can save new items to Supabase.`
+            ? `${dictionary.admin.liveMode}: ${adminEmail}`
             : mode === "supabase-readonly"
-              ? "Read-only mode: Supabase is connected for reading, but write keys are not configured yet."
+              ? dictionary.admin.readOnly
               : dictionary.admin.note}
         </p>
 
@@ -89,23 +89,36 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
               }
             }}
           >
-            <h2>{dictionary.admin.products}</h2>
-            <input name="name" placeholder="Product name" required />
-            <input name="category" placeholder="Category" required />
-            <input name="price" placeholder="$250" required />
+            <h2>{dictionary.admin.addProduct}</h2>
+            <input name="name" placeholder={dictionary.admin.productName} required />
+            <input name="category" placeholder={dictionary.admin.category} required />
+            <input name="price" placeholder={dictionary.admin.price} required />
             <UploadField
               accept="image/*"
+              chooseFileLabel={dictionary.admin.chooseFile}
               kind="image"
-              label="Product image"
+              label={dictionary.admin.productImage}
               name="image"
               placeholder="/products/product-1.svg"
+              uploadCompleteLabel={dictionary.admin.uploadComplete}
+              uploadingLabel={dictionary.admin.uploading}
               value={productImage}
               onChange={setProductImage}
             />
-            <textarea name="shortDescription" placeholder="Short description" rows={3} required />
-            <textarea name="description" placeholder="Full description" rows={5} required />
+            <textarea
+              name="shortDescription"
+              placeholder={dictionary.admin.shortDesc}
+              rows={3}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder={dictionary.admin.description}
+              rows={5}
+              required
+            />
             <button className="button-primary" type="submit">
-              Save product
+              {dictionary.admin.addProduct}
             </button>
             {productMessage ? <p className="success-note">{productMessage}</p> : null}
           </form>
@@ -134,21 +147,29 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
               }
             }}
           >
-            <h2>{dictionary.admin.gallery}</h2>
-            <input name="title" placeholder="Gallery title" required />
-            <input name="location" placeholder="Samarkand" required />
+            <h2>{dictionary.admin.addGallery}</h2>
+            <input name="title" placeholder={dictionary.admin.galleryTitle} required />
+            <input name="location" placeholder={dictionary.admin.galleryLocation} required />
             <UploadField
               accept="image/*"
+              chooseFileLabel={dictionary.admin.chooseFile}
               kind="image"
-              label="Gallery image"
+              label={dictionary.admin.galleryImage}
               name="image"
               placeholder="/gallery/gallery-1.svg"
+              uploadCompleteLabel={dictionary.admin.uploadComplete}
+              uploadingLabel={dictionary.admin.uploading}
               value={galleryImage}
               onChange={setGalleryImage}
             />
-            <textarea name="description" placeholder="Description" rows={5} required />
+            <textarea
+              name="description"
+              placeholder={dictionary.admin.description}
+              rows={5}
+              required
+            />
             <button className="button-primary" type="submit">
-              Save gallery item
+              {dictionary.admin.addGallery}
             </button>
             {galleryMessage ? <p className="success-note">{galleryMessage}</p> : null}
           </form>
@@ -178,22 +199,25 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
               }
             }}
           >
-            <h2>{dictionary.admin.news}</h2>
-            <input name="title" placeholder="News title" required />
-            <input name="date" type="date" required />
+            <h2>{dictionary.admin.addNews}</h2>
+            <input name="title" placeholder={dictionary.admin.newsTitle} required />
+            <input aria-label={dictionary.admin.date} name="date" type="date" required />
             <UploadField
               accept="image/*"
+              chooseFileLabel={dictionary.admin.chooseFile}
               kind="image"
-              label="News cover"
+              label={dictionary.admin.newsCover}
               name="image"
               placeholder="/news/news-1.svg"
+              uploadCompleteLabel={dictionary.admin.uploadComplete}
+              uploadingLabel={dictionary.admin.uploading}
               value={newsImage}
               onChange={setNewsImage}
             />
-            <textarea name="excerpt" placeholder="Short excerpt" rows={3} required />
-            <textarea name="body" placeholder="Article text" rows={5} required />
+            <textarea name="excerpt" placeholder={dictionary.admin.excerpt} rows={3} required />
+            <textarea name="body" placeholder={dictionary.admin.articleText} rows={5} required />
             <button className="button-primary" type="submit">
-              Save news
+              {dictionary.admin.addNews}
             </button>
             {newsMessage ? <p className="success-note">{newsMessage}</p> : null}
           </form>
@@ -225,26 +249,34 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
               }
             }}
           >
-            <h2>{dictionary.admin.collections}</h2>
-            <input name="title" placeholder="Collection title" required />
-            <input name="date" type="date" required />
+            <h2>{dictionary.admin.addCollection}</h2>
+            <input name="title" placeholder={dictionary.admin.collectionTitle} required />
+            <input aria-label={dictionary.admin.date} name="date" type="date" required />
             <input
               name="videoUrl"
-              placeholder="YouTube or Vimeo video link"
+              placeholder={dictionary.admin.videoUrl}
               required
             />
             <UploadField
               accept="image/*"
+              chooseFileLabel={dictionary.admin.chooseFile}
               kind="image"
-              label="Video cover image"
+              label={dictionary.admin.videoCover}
               name="cover"
               placeholder="/uploads/ikat/look-09.jpg"
+              uploadCompleteLabel={dictionary.admin.uploadComplete}
+              uploadingLabel={dictionary.admin.uploading}
               value={collectionCover}
               onChange={setCollectionCover}
             />
-            <textarea name="description" placeholder="Collection description" rows={5} required />
+            <textarea
+              name="description"
+              placeholder={dictionary.admin.collectionDescription}
+              rows={5}
+              required
+            />
             <button className="button-primary" type="submit">
-              Save collection video
+              {dictionary.admin.addCollection}
             </button>
             {collectionMessage ? <p className="success-note">{collectionMessage}</p> : null}
           </form>
@@ -270,6 +302,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 meta: item.location[locale],
               }))}
               kind="gallery"
+              noItemsLabel={dictionary.admin.noItems}
               title={dictionary.nav.gallery}
               onDelete={handleDelete}
             />
@@ -283,6 +316,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 meta: item.date,
               }))}
               kind="collections"
+              noItemsLabel={dictionary.admin.noItems}
               title={dictionary.nav.collections}
               onDelete={handleDelete}
             />
@@ -296,6 +330,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 meta: item.price,
               }))}
               kind="products"
+              noItemsLabel={dictionary.admin.noItems}
               title={dictionary.nav.catalog}
               onDelete={handleDelete}
             />
@@ -309,6 +344,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 meta: item.date,
               }))}
               kind="news"
+              noItemsLabel={dictionary.admin.noItems}
               title={dictionary.nav.news}
               onDelete={handleDelete}
             />
@@ -349,6 +385,7 @@ type AdminDeleteListProps = {
     meta: string;
   }>;
   kind: ContentKind;
+  noItemsLabel: string;
   title: string;
   onDelete: (kind: ContentKind, id: string, label: string) => void;
 };
@@ -359,6 +396,7 @@ function AdminDeleteList({
   deletingLabel,
   items,
   kind,
+  noItemsLabel,
   onDelete,
   title,
 }: AdminDeleteListProps) {
@@ -382,7 +420,7 @@ function AdminDeleteList({
             </button>
           </div>
         ))}
-        {items.length === 0 ? <p>No items yet.</p> : null}
+        {items.length === 0 ? <p>{noItemsLabel}</p> : null}
       </div>
     </section>
   );
@@ -390,10 +428,13 @@ function AdminDeleteList({
 
 type UploadFieldProps = {
   accept: string;
+  chooseFileLabel: string;
   kind: "image" | "video";
   label: string;
   name: string;
   placeholder: string;
+  uploadCompleteLabel: string;
+  uploadingLabel: string;
   value: string;
   required?: boolean;
   onChange: (value: string) => void;
@@ -401,12 +442,15 @@ type UploadFieldProps = {
 
 function UploadField({
   accept,
+  chooseFileLabel,
   kind,
   label,
   name,
   onChange,
   placeholder,
   required,
+  uploadCompleteLabel,
+  uploadingLabel,
   value,
 }: UploadFieldProps) {
   const [message, setMessage] = useState("");
@@ -439,7 +483,7 @@ function UploadField({
             try {
               const publicUrl = await uploadAdminMedia(file, kind);
               onChange(publicUrl);
-              setMessage("Upload complete. URL added above.");
+              setMessage(uploadCompleteLabel);
             } catch (error) {
               setMessage(error instanceof Error ? error.message : "Upload failed.");
             } finally {
@@ -448,7 +492,7 @@ function UploadField({
             }
           }}
         />
-        <span>{uploading ? "Uploading..." : "Choose file"}</span>
+        <span>{uploading ? uploadingLabel : chooseFileLabel}</span>
       </span>
       {message ? <span className="upload-message">{message}</span> : null}
     </label>
