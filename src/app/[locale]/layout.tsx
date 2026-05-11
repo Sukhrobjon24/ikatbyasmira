@@ -8,6 +8,37 @@ import { dictionaries, locales } from "@/lib/i18n";
 import { getSiteContent } from "@/lib/site-content";
 import type { Locale } from "@/types/content";
 
+const localeMetadata: Record<
+  Locale,
+  {
+    title: string;
+    description: string;
+    keywords: string;
+  }
+> = {
+  uz: {
+    title: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
+    description:
+      "Samarqand ustalaridan qo'lda ishlangan ikat ipak matosi. Premium o'zbek to'qimachilik san'ati — zamonaviy moda va interyer uchun.",
+    keywords:
+      "ikat, o'zbek matosi, ipak, Samarqand, qo'lda ishlangan, IKAT by Asmira, ikatbyasmira, o'zbek moda",
+  },
+  ru: {
+    title: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
+    description:
+      "Шёлковые иkat-ткани ручной работы от мастеров Самарканда. Премиум узбекское ткачество для современной моды и интерьера.",
+    keywords:
+      "икат, узбекская ткань, шёлк, Самарканд, ручная работа, IKAT by Asmira, узбекская мода",
+  },
+  en: {
+    title: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
+    description:
+      "Handwoven ikat silk fabrics from Samarkand masters. Premium Uzbek textile art for modern fashion and interior design.",
+    keywords:
+      "ikat, uzbek fabric, silk, Samarkand, handmade, IKAT by Asmira, uzbek fashion, central asia textile",
+  },
+};
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -23,12 +54,13 @@ export async function generateMetadata({
     return {};
   }
 
-  const dictionary = dictionaries[locale as Locale];
+  const metadata = localeMetadata[locale as Locale];
   const canonicalPath = `/${locale}`;
 
   return {
-    title: dictionary.meta.title,
-    description: dictionary.meta.description,
+    title: metadata.title,
+    description: metadata.description,
+    keywords: metadata.keywords,
     alternates: {
       canonical: canonicalPath,
       languages: {
@@ -38,8 +70,8 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: dictionary.meta.title,
-      description: dictionary.meta.description,
+      title: metadata.title,
+      description: metadata.description,
       url: canonicalPath,
       siteName: "IKAT by Asmira",
       locale: locale === "ru" ? "ru_RU" : locale === "uz" ? "uz_UZ" : "en_US",
@@ -55,8 +87,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: dictionary.meta.title,
-      description: dictionary.meta.description,
+      title: metadata.title,
+      description: metadata.description,
       images: ["/uploads/ikat/look-09.jpg"],
     },
   };
