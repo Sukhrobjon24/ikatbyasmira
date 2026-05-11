@@ -11,7 +11,7 @@ export const localeLabels: Record<Locale, string> = {
 export const dictionaries = {
   uz: {
     meta: {
-      title: "IKAT",
+      title: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
       description:
         "O'zbekiston ikat merosi, qo'lda ishlangan ipak va zamonaviy premium moda haqida ko'p tilli katalog.",
     },
@@ -183,7 +183,7 @@ export const dictionaries = {
   },
   ru: {
     meta: {
-      title: "IKAT",
+      title: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
       description:
         "Многоязычный каталог IKAT: узбекское наследие, шелк ручной работы и современная премиальная мода.",
     },
@@ -355,7 +355,7 @@ export const dictionaries = {
   },
   en: {
     meta: {
-      title: "IKAT",
+      title: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
       description:
         "A multilingual IKAT catalog for Uzbek heritage, handmade silk, premium fashion, gallery stories, and client-ready product presentation.",
     },
