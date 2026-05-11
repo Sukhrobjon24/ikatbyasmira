@@ -8,35 +8,22 @@ import { dictionaries, locales } from "@/lib/i18n";
 import { getSiteContent } from "@/lib/site-content";
 import type { Locale } from "@/types/content";
 
-const localeMetadata: Record<
-  Locale,
-  {
-    title: string;
-    description: string;
-    keywords: string;
-  }
-> = {
-  uz: {
-    title: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
-    description:
-      "Samarqand ustalaridan qo'lda ishlangan ikat ipak matosi. Premium o'zbek to'qimachilik san'ati — zamonaviy moda va interyer uchun.",
-    keywords:
-      "ikat, o'zbek matosi, ipak, Samarqand, qo'lda ishlangan, IKAT by Asmira, ikatbyasmira, o'zbek moda",
-  },
-  ru: {
-    title: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
-    description:
-      "Шёлковые иkat-ткани ручной работы от мастеров Самарканда. Премиум узбекское ткачество для современной моды и интерьера.",
-    keywords:
-      "икат, узбекская ткань, шёлк, Самарканд, ручная работа, IKAT by Asmira, узбекская мода",
-  },
-  en: {
-    title: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
-    description:
-      "Handwoven ikat silk fabrics from Samarkand masters. Premium Uzbek textile art for modern fashion and interior design.",
-    keywords:
-      "ikat, uzbek fabric, silk, Samarkand, handmade, IKAT by Asmira, uzbek fashion, central asia textile",
-  },
+const titles: Record<string, string> = {
+  uz: "IKAT by Asmira | O'zbek qo'lda ishlangan ipak matosi | Samarqand",
+  ru: "IKAT by Asmira | Узбекский шёлк ручной работы | Самарканд",
+  en: "IKAT by Asmira | Handmade Uzbek Silk Fabric | Samarkand",
+};
+
+const descriptions: Record<string, string> = {
+  uz: "Samarqand ustalaridan qo'lda ishlangan ikat ipak matosi. Premium o'zbek to'qimachilik san'ati — zamonaviy moda va interyer uchun.",
+  ru: "Шёлковые ikat-ткани ручной работы от мастеров Самарканда. Премиум узбекское ткачество для современной моды и интерьера.",
+  en: "Handwoven ikat silk fabrics from Samarkand masters. Premium Uzbek textile art for modern fashion and interior design.",
+};
+
+const keywords: Record<string, string> = {
+  uz: "ikat, o'zbek matosi, ipak, Samarqand, qo'lda ishlangan, IKAT by Asmira, ikatbyasmira, o'zbek moda",
+  ru: "икат, узбекская ткань, шёлк, Самарканд, ручная работа, IKAT by Asmira, узбекская мода",
+  en: "ikat, uzbek fabric, silk, Samarkand, handmade, IKAT by Asmira, uzbek fashion, central asia textile",
 };
 
 export function generateStaticParams() {
@@ -54,13 +41,14 @@ export async function generateMetadata({
     return {};
   }
 
-  const metadata = localeMetadata[locale as Locale];
   const canonicalPath = `/${locale}`;
+  const title = titles[locale] ?? titles["uz"];
+  const description = descriptions[locale] ?? descriptions["uz"];
 
   return {
-    title: metadata.title,
-    description: metadata.description,
-    keywords: metadata.keywords,
+    title,
+    description,
+    keywords: keywords[locale] ?? keywords["uz"],
     alternates: {
       canonical: canonicalPath,
       languages: {
@@ -70,8 +58,8 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: metadata.title,
-      description: metadata.description,
+      title,
+      description,
       url: canonicalPath,
       siteName: "IKAT by Asmira",
       locale: locale === "ru" ? "ru_RU" : locale === "uz" ? "uz_UZ" : "en_US",
@@ -87,8 +75,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: metadata.title,
-      description: metadata.description,
+      title,
+      description,
       images: ["/uploads/ikat/look-09.jpg"],
     },
   };
