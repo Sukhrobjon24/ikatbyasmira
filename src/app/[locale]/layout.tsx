@@ -49,6 +49,9 @@ export async function generateMetadata({
     title,
     description,
     keywords: keywords[locale] ?? keywords["uz"],
+    other: {
+      "cache-control": "no-cache, no-store, must-revalidate",
+    },
     alternates: {
       canonical: canonicalPath,
       languages: {
