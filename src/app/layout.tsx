@@ -9,11 +9,11 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ikatbyasmira.u
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "IKAT by Asmira",
+    default: "IKAT by Asmira | Handmade Uzbek Silk | Samarkand",
     template: "%s | IKAT by Asmira",
   },
   description:
-    "IKAT by Asmira is a multilingual premium catalog for authentic Uzbek ikat fabrics, handmade silk, fashion collections, gallery stories, and client orders.",
+    "Handwoven ikat silk fabrics from Samarkand. Premium Uzbek textile art for modern fashion and interior design.",
   keywords: [
     "IKAT by Asmira",
     "ikatbyasmira",
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     "Samarqand",
   ],
   openGraph: {
-    title: "IKAT by Asmira",
+    title: "IKAT by Asmira | Handmade Uzbek Silk | Samarkand",
     description:
-      "Authentic Uzbek ikat fabrics, handmade silk, premium collections, and cultural storytelling from IKAT by Asmira.",
+      "Handwoven ikat silk fabrics from Samarkand. Premium Uzbek textile art for modern fashion and interior design.",
     url: siteUrl,
     siteName: "IKAT by Asmira",
     locale: "en_US",
