@@ -466,6 +466,13 @@ p {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.location-button {
+  width: 100%;
+  gap: 0.6rem;
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
 .hero-visual {
   position: relative;
   min-height: 42rem;

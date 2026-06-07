@@ -59,9 +59,9 @@ export function ContactPage() {
             href="https://maps.google.com/?q=Samarqand,O'zbekiston"
             target="_blank"
             rel="noreferrer"
-            className="button-secondary"
+            className="button-primary location-button"
           >
-            {dictionary.ui.location}
+            📍 Lokatsiyani ko&apos;rish — Samarqand, O&apos;zbekiston
           </a>
         </ViewportReveal>
 
