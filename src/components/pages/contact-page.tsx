@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSiteContent } from "@/components/content-provider";
 import { ViewportReveal } from "@/components/viewport-reveal";
-import { getWhatsAppUrl, socialLinks } from "@/lib/social";
+import { socialLinks } from "@/lib/social";
 
 export function ContactPage() {
   const { dictionary } = useSiteContent();
@@ -18,15 +18,12 @@ export function ContactPage() {
           <p className="lead-text">{dictionary.contact.subtitle}</p>
 
           <div className="contact-card">
-            <p>
-              {dictionary.contact.phone}: +998 90 605 58 55
-            </p>
-            <p>{dictionary.contact.phone}: +998 91 555 60 31</p>
+            <p>{dictionary.contact.phone}: +998 90 605 58 55</p>
             <p>{dictionary.contact.email}: suxrobjonurunov@gmail.com</p>
             <p>{dictionary.ui.location}: {dictionary.contact.location}</p>
             <div className="detail-actions">
               <a
-                href={getWhatsAppUrl()}
+                href="https://wa.me/998906055855"
                 target="_blank"
                 rel="noreferrer"
                 className="button-primary"
@@ -63,7 +60,7 @@ export function ContactPage() {
           <div className="map-frame">
             <iframe
               title="IKAT map"
-              src={`https://www.google.com/maps?q=39.6543668,67.0615460&z=16&output=embed`}
+              src={socialLinks.maps}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
@@ -74,20 +71,33 @@ export function ContactPage() {
           <form
             onSubmit={(event) => {
               event.preventDefault();
+
+              const formData = new FormData(event.currentTarget);
+              const name = String(formData.get("name") ?? "");
+              const phone = String(formData.get("phone") ?? "");
+              const message = String(formData.get("message") ?? "");
+
+              const text = [
+                `${dictionary.contact.form.name}: ${name}`,
+                `${dictionary.contact.form.phone}: ${phone}`,
+                `${dictionary.contact.form.message}: ${message}`,
+              ].join("\n");
+
+              window.open(`https://wa.me/998906055855?text=${encodeURIComponent(text)}`, "_blank");
               setSent(true);
             }}
           >
             <label>
               {dictionary.contact.form.name}
-              <input type="text" placeholder={dictionary.contact.form.name} required />
+              <input type="text" name="name" placeholder={dictionary.contact.form.name} required />
             </label>
             <label>
               {dictionary.contact.form.phone}
-              <input type="tel" placeholder="+998" required />
+              <input type="tel" name="phone" placeholder="+998" required />
             </label>
             <label>
               {dictionary.contact.form.message}
-              <textarea placeholder={dictionary.contact.form.message} rows={6} required />
+              <textarea name="message" placeholder={dictionary.contact.form.message} rows={6} required />
             </label>
             <button className="button-primary" type="submit">
               {dictionary.contact.form.submit}

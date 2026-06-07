@@ -1,13 +1,23 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { locales } from "@/lib/i18n";
 import "./globals.css";
+
+const defaultLocale = "uz";
+
+async function resolveLocale() {
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const segment = pathname.split("/")[1];
+
+  return (locales as readonly string[]).includes(segment) ? segment : defaultLocale;
+}
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ikatbyasmira.uz").replace(
   /\/$/,
   "",
 );
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -34,13 +44,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await resolveLocale();
+
   return (
-    <html lang="en" className="h-full scroll-smooth">
+    <html lang={locale} className="h-full scroll-smooth">
       <body className="min-h-full">{children}</body>
     </html>
   );

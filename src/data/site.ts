@@ -28,6 +28,9 @@ export const initialContent: ContentState = {
       },
       price: "$420",
       tags: ["Runway", "Ikat", "Luxury"],
+      colors: ["Qora", "Oq"],
+      sizes: ["S", "M", "L"],
+      inStock: true,
     },
     {
       id: "p2",
@@ -55,6 +58,9 @@ export const initialContent: ContentState = {
       },
       price: "$310",
       tags: ["Menswear", "Heritage", "Runway"],
+      colors: ["Qora", "Kulrang"],
+      sizes: ["M", "L", "XL"],
+      inStock: true,
     },
     {
       id: "p3",
@@ -82,6 +88,9 @@ export const initialContent: ContentState = {
       },
       price: "$180",
       tags: ["Outerwear", "Modern", "Statement"],
+      colors: ["Ko'k", "Qora"],
+      sizes: ["S", "M", "L", "XL"],
+      inStock: true,
     },
     {
       id: "p4",
@@ -109,6 +118,9 @@ export const initialContent: ContentState = {
       },
       price: "$145",
       tags: ["Editorial", "Embroidery", "Luxury"],
+      colors: ["Oq", "Tilla"],
+      sizes: ["S", "M"],
+      inStock: true,
     },
     {
       id: "p5",
@@ -136,6 +148,9 @@ export const initialContent: ContentState = {
       },
       price: "$560",
       tags: ["Patchwork", "Runway", "Limited"],
+      colors: ["Qizil", "Qora"],
+      sizes: ["M", "L"],
+      inStock: true,
     },
     {
       id: "p6",
@@ -163,6 +178,9 @@ export const initialContent: ContentState = {
       },
       price: "$195",
       tags: ["Womenswear", "Chevron", "Handmade"],
+      colors: ["Ko'k", "Oq"],
+      sizes: ["S", "M", "L"],
+      inStock: true,
     },
   ],
   gallery: [
@@ -313,7 +331,7 @@ export const initialContent: ContentState = {
       id: "c1",
       slug: "samarkand-runway-film",
       cover: "/uploads/ikat/look-01.jpg",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoUrl: "",
       date: "2026-03-20",
       title: {
         uz: "Samarqand runway filmi",
@@ -330,7 +348,7 @@ export const initialContent: ContentState = {
       id: "c2",
       slug: "atelier-process-video",
       cover: "/uploads/ikat/look-07.jpg",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoUrl: "",
       date: "2026-02-22",
       title: {
         uz: "Atelier jarayoni",

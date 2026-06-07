@@ -10,6 +10,9 @@ export type Product = {
   description: Record<Locale, string>;
   price: string;
   tags: string[];
+  colors: string[];
+  sizes: string[];
+  inStock: boolean;
 };
 
 export type GalleryItem = {

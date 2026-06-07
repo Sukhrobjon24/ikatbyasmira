@@ -66,7 +66,7 @@ export function AdminLoginPage() {
           <button className="button-primary" type="submit" disabled={loading}>
             {loading ? dictionary.admin.signingIn : dictionary.admin.signIn}
           </button>
-          {message ? <p className="success-note">{message}</p> : null}
+          {message ? <p className="error-note">{message}</p> : null}
         </form>
       </ViewportReveal>
     </section>

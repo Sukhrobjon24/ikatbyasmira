@@ -24,6 +24,9 @@ type ProductRow = {
   description: LocalizedRecord;
   price: string;
   tags: string[] | null;
+  colors: string[] | null;
+  sizes: string[] | null;
+  in_stock: boolean | null;
 };
 
 type GalleryRow = {
@@ -104,6 +107,62 @@ export async function getSiteContent(): Promise<{
   }
 }
 
+export async function getProductById(id: string): Promise<Product | null> {
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase.from("products").select("*").eq("id", id).maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapProductRow(data as ProductRow);
+}
+
+export async function getGalleryItemById(id: string): Promise<GalleryItem | null> {
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase
+    .from("gallery_items")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapGalleryRow(data as GalleryRow);
+}
+
+export async function getNewsItemById(id: string): Promise<NewsItem | null> {
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase
+    .from("news_posts")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapNewsRow(data as NewsRow);
+}
+
+export async function getCollectionVideoById(id: string): Promise<CollectionVideo | null> {
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase
+    .from("collection_videos")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapCollectionRow(data as CollectionRow);
+}
+
 export async function insertProduct(product: Product) {
   const supabase = createSupabaseServiceClient();
 
@@ -111,6 +170,24 @@ export async function insertProduct(product: Product) {
 
   if (error) {
     throw error;
+  }
+}
+
+export async function updateProductInSupabase(product: Product) {
+  const supabase = createSupabaseServiceClient();
+
+  const { data, error } = await supabase
+    .from("products")
+    .update(toProductRow(product))
+    .eq("id", product.id)
+    .select("id");
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Product was not found in Supabase.");
   }
 }
 
@@ -126,6 +203,24 @@ export async function insertGalleryItem(item: GalleryItem) {
   }
 }
 
+export async function updateGalleryItemInSupabase(item: GalleryItem) {
+  const supabase = createSupabaseServiceClient();
+
+  const { data, error } = await supabase
+    .from("gallery_items")
+    .update(toGalleryRow(item))
+    .eq("id", item.id)
+    .select("id");
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Gallery item was not found in Supabase.");
+  }
+}
+
 export async function insertNewsItem(item: NewsItem) {
   const supabase = createSupabaseServiceClient();
 
@@ -133,6 +228,24 @@ export async function insertNewsItem(item: NewsItem) {
 
   if (error) {
     throw error;
+  }
+}
+
+export async function updateNewsItemInSupabase(item: NewsItem) {
+  const supabase = createSupabaseServiceClient();
+
+  const { data, error } = await supabase
+    .from("news_posts")
+    .update(toNewsRow(item))
+    .eq("id", item.id)
+    .select("id");
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("News post was not found in Supabase.");
   }
 }
 
@@ -145,6 +258,24 @@ export async function insertCollectionVideo(item: CollectionVideo) {
 
   if (error) {
     throw error;
+  }
+}
+
+export async function updateCollectionVideoInSupabase(item: CollectionVideo) {
+  const supabase = createSupabaseServiceClient();
+
+  const { data, error } = await supabase
+    .from("collection_videos")
+    .update(toCollectionRow(item))
+    .eq("id", item.id)
+    .select("id");
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data.length) {
+    throw new Error("Collection video was not found in Supabase.");
   }
 }
 
@@ -223,6 +354,9 @@ function mapProductRow(row: ProductRow): Product {
     description: row.description,
     price: row.price,
     tags: row.tags ?? [],
+    colors: row.colors ?? [],
+    sizes: row.sizes ?? [],
+    inStock: row.in_stock ?? true,
   };
 }
 
@@ -271,6 +405,9 @@ function toProductRow(product: Product) {
     description: product.description,
     price: product.price,
     tags: product.tags,
+    colors: product.colors,
+    sizes: product.sizes,
+    in_stock: product.inStock,
   };
 }
 

@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
-import { createProduct } from "@/lib/content-store";
+import { updateProduct as buildUpdatedProduct, createProduct } from "@/lib/content-store";
 import { isSupabaseWriteConfigured } from "@/lib/env";
-import { deleteProduct, insertProduct } from "@/lib/site-content";
+import {
+  deleteProduct,
+  getProductById,
+  insertProduct,
+  updateProductInSupabase,
+} from "@/lib/site-content";
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest(request))) {
@@ -44,6 +49,68 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { message: "Unable to save product to Supabase." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  if (!(await isAdminRequest(request))) {
+    return NextResponse.json({ message: "Admin authentication required." }, { status: 401 });
+  }
+
+  if (!isSupabaseWriteConfigured) {
+    return NextResponse.json(
+      {
+        message:
+          "Supabase write access is not configured yet. Add the service role key to enable live admin writes.",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const payload = (await request.json()) as {
+      id?: string;
+      image?: string;
+      name?: string;
+      category?: string;
+      shortDescription?: string;
+      description?: string;
+      price?: string;
+      colors?: string[];
+      sizes?: string[];
+      inStock?: boolean;
+    };
+
+    if (!payload.id) {
+      return NextResponse.json({ message: "Product id is required." }, { status: 400 });
+    }
+
+    const existing = await getProductById(payload.id);
+
+    if (!existing) {
+      return NextResponse.json({ message: "Product was not found." }, { status: 404 });
+    }
+
+    const product = buildUpdatedProduct(existing, {
+      image: payload.image ?? "",
+      name: payload.name ?? "",
+      category: payload.category ?? "",
+      shortDescription: payload.shortDescription ?? "",
+      description: payload.description ?? "",
+      price: payload.price ?? "",
+      colors: payload.colors,
+      sizes: payload.sizes,
+      inStock: payload.inStock,
+    });
+
+    await updateProductInSupabase(product);
+
+    return NextResponse.json({ item: product });
+  } catch {
+    return NextResponse.json(
+      { message: "Unable to update product in Supabase." },
       { status: 500 },
     );
   }

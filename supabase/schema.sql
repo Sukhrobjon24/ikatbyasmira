@@ -10,8 +10,15 @@ create table if not exists public.products (
   description jsonb not null,
   price text not null,
   tags text[] not null default '{}',
+  colors text[] not null default '{}',
+  sizes text[] not null default '{}',
+  in_stock boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+alter table public.products add column if not exists colors text[] not null default '{}';
+alter table public.products add column if not exists sizes text[] not null default '{}';
+alter table public.products add column if not exists in_stock boolean not null default true;
 
 create table if not exists public.gallery_items (
   id uuid primary key default gen_random_uuid(),

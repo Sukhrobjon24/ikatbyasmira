@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
-import { createGalleryItem } from "@/lib/content-store";
+import { updateGalleryItem as buildUpdatedGalleryItem, createGalleryItem } from "@/lib/content-store";
 import { isSupabaseWriteConfigured } from "@/lib/env";
-import { deleteGalleryItem, insertGalleryItem } from "@/lib/site-content";
+import {
+  deleteGalleryItem,
+  getGalleryItemById,
+  insertGalleryItem,
+  updateGalleryItemInSupabase,
+} from "@/lib/site-content";
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest(request))) {
@@ -40,6 +45,58 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { message: "Unable to save gallery item to Supabase." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  if (!(await isAdminRequest(request))) {
+    return NextResponse.json({ message: "Admin authentication required." }, { status: 401 });
+  }
+
+  if (!isSupabaseWriteConfigured) {
+    return NextResponse.json(
+      {
+        message:
+          "Supabase write access is not configured yet. Add the service role key to enable live admin writes.",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const payload = (await request.json()) as {
+      id?: string;
+      image?: string;
+      title?: string;
+      location?: string;
+      description?: string;
+    };
+
+    if (!payload.id) {
+      return NextResponse.json({ message: "Gallery item id is required." }, { status: 400 });
+    }
+
+    const existing = await getGalleryItemById(payload.id);
+
+    if (!existing) {
+      return NextResponse.json({ message: "Gallery item was not found." }, { status: 404 });
+    }
+
+    const item = buildUpdatedGalleryItem(existing, {
+      image: payload.image ?? "",
+      title: payload.title ?? "",
+      location: payload.location ?? "",
+      description: payload.description ?? "",
+    });
+
+    await updateGalleryItemInSupabase(item);
+
+    return NextResponse.json({ item });
+  } catch {
+    return NextResponse.json(
+      { message: "Unable to update gallery item in Supabase." },
       { status: 500 },
     );
   }

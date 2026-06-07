@@ -14,6 +14,11 @@ import {
   deleteStoredContentItem,
   mergeContent,
   readStoredContent,
+  replaceStoredContentItem,
+  updateCollectionVideo,
+  updateGalleryItem,
+  updateNewsItem,
+  updateProduct,
   writeStoredContent,
   type ContentKind,
 } from "@/lib/content-store";
@@ -38,6 +43,16 @@ type ContentContextValue = {
   addGalleryItem: (input: Parameters<typeof createGalleryItem>[0]) => Promise<string>;
   addNewsItem: (input: Parameters<typeof createNewsItem>[0]) => Promise<string>;
   addCollectionVideo: (
+    input: Parameters<typeof createCollectionVideo>[0],
+  ) => Promise<string>;
+  updateProduct: (id: string, input: Parameters<typeof createProduct>[0]) => Promise<string>;
+  updateGalleryItem: (
+    id: string,
+    input: Parameters<typeof createGalleryItem>[0],
+  ) => Promise<string>;
+  updateNewsItem: (id: string, input: Parameters<typeof createNewsItem>[0]) => Promise<string>;
+  updateCollectionVideo: (
+    id: string,
     input: Parameters<typeof createCollectionVideo>[0],
   ) => Promise<string>;
   deleteContentItem: (kind: ContentKind, id: string) => Promise<string>;
@@ -264,6 +279,202 @@ export function ContentProvider({
       return mode === "supabase"
         ? "Collection video saved to Supabase."
         : "Collection video added to local demo content.";
+    },
+    async updateProduct(id, input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const existing = content.products.find((product) => product.id === id);
+
+      if (!existing) {
+        throw new Error("Product was not found.");
+      }
+
+      let item = updateProduct(existing, input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/products", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id, ...input }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to update product.");
+        }
+
+        const payload = (await response.json()) as { item?: Product };
+        if (payload.item) {
+          item = payload.item;
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        products: current.products.map((product) => (product.id === id ? item : product)),
+      }));
+
+      if (mode === "demo") {
+        writeStoredContent(replaceStoredContentItem(readStoredContent(), "products", item));
+      }
+
+      return mode === "supabase"
+        ? "Product updated in Supabase."
+        : "Product updated in local demo content.";
+    },
+    async updateGalleryItem(id, input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const existing = content.gallery.find((item) => item.id === id);
+
+      if (!existing) {
+        throw new Error("Gallery item was not found.");
+      }
+
+      let item = updateGalleryItem(existing, input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/gallery", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id, ...input }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to update gallery item.");
+        }
+
+        const payload = (await response.json()) as { item?: GalleryItem };
+        if (payload.item) {
+          item = payload.item;
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        gallery: current.gallery.map((galleryItem) =>
+          galleryItem.id === id ? item : galleryItem,
+        ),
+      }));
+
+      if (mode === "demo") {
+        writeStoredContent(replaceStoredContentItem(readStoredContent(), "gallery", item));
+      }
+
+      return mode === "supabase"
+        ? "Gallery item updated in Supabase."
+        : "Gallery item updated in local demo content.";
+    },
+    async updateNewsItem(id, input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const existing = content.news.find((item) => item.id === id);
+
+      if (!existing) {
+        throw new Error("News post was not found.");
+      }
+
+      let item = updateNewsItem(existing, input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/news", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id, ...input }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to update news post.");
+        }
+
+        const payload = (await response.json()) as { item?: NewsItem };
+        if (payload.item) {
+          item = payload.item;
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        news: current.news.map((newsItem) => (newsItem.id === id ? item : newsItem)),
+      }));
+
+      if (mode === "demo") {
+        writeStoredContent(replaceStoredContentItem(readStoredContent(), "news", item));
+      }
+
+      return mode === "supabase"
+        ? "News post updated in Supabase."
+        : "News post updated in local demo content.";
+    },
+    async updateCollectionVideo(id, input) {
+      if (mode === "supabase-readonly") {
+        throw new Error(
+          "Supabase read mode is enabled, but write access is not configured yet.",
+        );
+      }
+
+      const existing = content.collections.find((item) => item.id === id);
+
+      if (!existing) {
+        throw new Error("Collection video was not found.");
+      }
+
+      let item = updateCollectionVideo(existing, input);
+
+      if (mode === "supabase") {
+        const response = await fetch("/api/admin/collections", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id, ...input }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { message?: string };
+          throw new Error(payload.message ?? "Unable to update collection video.");
+        }
+
+        const payload = (await response.json()) as { item?: CollectionVideo };
+        if (payload.item) {
+          item = payload.item;
+        }
+      }
+
+      setContent((current) => ({
+        ...current,
+        collections: current.collections.map((collectionItem) =>
+          collectionItem.id === id ? item : collectionItem,
+        ),
+      }));
+
+      if (mode === "demo") {
+        writeStoredContent(replaceStoredContentItem(readStoredContent(), "collections", item));
+      }
+
+      return mode === "supabase"
+        ? "Collection video updated in Supabase."
+        : "Collection video updated in local demo content.";
     },
     async deleteContentItem(kind, id) {
       if (mode === "supabase-readonly") {

@@ -90,14 +90,35 @@ export function deleteStoredContentItem(stored: StoredContent, kind: ContentKind
   };
 }
 
-export function createProduct(input: {
+export function replaceStoredContentItem<T extends { id: string }>(
+  stored: StoredContent,
+  kind: ContentKind,
+  item: T,
+) {
+  const currentItems = (stored[kind] ?? []) as unknown as T[];
+  const exists = currentItems.some((existing) => existing.id === item.id);
+
+  return {
+    ...stored,
+    [kind]: exists
+      ? currentItems.map((existing) => (existing.id === item.id ? item : existing))
+      : [item, ...currentItems],
+  };
+}
+
+export type ProductInput = {
   image: string;
   name: string;
   category: string;
   shortDescription: string;
   description: string;
   price: string;
-}): Product {
+  colors?: string[];
+  sizes?: string[];
+  inStock?: boolean;
+};
+
+export function createProduct(input: ProductInput): Product {
   const name = input.name || "New IKAT Product";
 
   return {
@@ -126,15 +147,41 @@ export function createProduct(input: {
     },
     price: input.price,
     tags: ["New", "Admin"],
+    colors: input.colors ?? [],
+    sizes: input.sizes ?? [],
+    inStock: input.inStock ?? true,
   };
 }
 
-export function createGalleryItem(input: {
+export function updateProduct(existing: Product, input: ProductInput): Product {
+  const name = input.name || existing.name.uz;
+
+  return {
+    ...existing,
+    image: input.image || existing.image,
+    name: { uz: name, ru: name, en: name },
+    category: { uz: input.category, ru: input.category, en: input.category },
+    shortDescription: {
+      uz: input.shortDescription,
+      ru: input.shortDescription,
+      en: input.shortDescription,
+    },
+    description: { uz: input.description, ru: input.description, en: input.description },
+    price: input.price,
+    colors: input.colors ?? existing.colors,
+    sizes: input.sizes ?? existing.sizes,
+    inStock: input.inStock ?? existing.inStock,
+  };
+}
+
+export type GalleryItemInput = {
   image: string;
   title: string;
   location: string;
   description: string;
-}): GalleryItem {
+};
+
+export function createGalleryItem(input: GalleryItemInput): GalleryItem {
   return {
     id: crypto.randomUUID(),
     image: input.image || "/gallery/gallery-1.svg",
@@ -156,13 +203,25 @@ export function createGalleryItem(input: {
   };
 }
 
-export function createNewsItem(input: {
+export function updateGalleryItem(existing: GalleryItem, input: GalleryItemInput): GalleryItem {
+  return {
+    ...existing,
+    image: input.image || existing.image,
+    title: { uz: input.title, ru: input.title, en: input.title },
+    location: { uz: input.location, ru: input.location, en: input.location },
+    description: { uz: input.description, ru: input.description, en: input.description },
+  };
+}
+
+export type NewsItemInput = {
   image: string;
   title: string;
   excerpt: string;
   body: string;
   date: string;
-}): NewsItem {
+};
+
+export function createNewsItem(input: NewsItemInput): NewsItem {
   const title = input.title || "IKAT update";
 
   return {
@@ -188,13 +247,26 @@ export function createNewsItem(input: {
   };
 }
 
-export function createCollectionVideo(input: {
+export function updateNewsItem(existing: NewsItem, input: NewsItemInput): NewsItem {
+  return {
+    ...existing,
+    cover: input.image || existing.cover,
+    date: input.date || existing.date,
+    title: { uz: input.title, ru: input.title, en: input.title },
+    excerpt: { uz: input.excerpt, ru: input.excerpt, en: input.excerpt },
+    body: { uz: input.body, ru: input.body, en: input.body },
+  };
+}
+
+export type CollectionVideoInput = {
   cover: string;
   videoUrl: string;
   title: string;
   description: string;
   date: string;
-}): CollectionVideo {
+};
+
+export function createCollectionVideo(input: CollectionVideoInput): CollectionVideo {
   const title = input.title || "New IKAT Collection";
 
   return {
@@ -216,6 +288,20 @@ export function createCollectionVideo(input: {
   };
 }
 
+export function updateCollectionVideo(
+  existing: CollectionVideo,
+  input: CollectionVideoInput,
+): CollectionVideo {
+  return {
+    ...existing,
+    cover: input.cover || existing.cover,
+    videoUrl: input.videoUrl || existing.videoUrl,
+    date: input.date || existing.date,
+    title: { uz: input.title, ru: input.title, en: input.title },
+    description: { uz: input.description, ru: input.description, en: input.description },
+  };
+}
+
 function normalizeProducts(products: Product[]): Product[] {
   return products.map((product) => ({
     ...product,
@@ -223,6 +309,9 @@ function normalizeProducts(products: Product[]): Product[] {
     category: pickLocales(product.category),
     shortDescription: pickLocales(product.shortDescription),
     description: pickLocales(product.description),
+    colors: product.colors ?? [],
+    sizes: product.sizes ?? [],
+    inStock: product.inStock ?? true,
   }));
 }
 

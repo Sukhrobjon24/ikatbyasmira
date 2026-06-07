@@ -1,13 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useSiteContent } from "@/components/content-provider";
 import { ViewportReveal } from "@/components/viewport-reveal";
 import type { ContentKind } from "@/lib/content-store";
+import type { Dictionary } from "@/lib/i18n";
+import type { CollectionVideo, GalleryItem, NewsItem, Product } from "@/types/content";
+
+const PRODUCT_SIZES = ["S", "M", "L", "XL"];
 
 type AdminPageProps = {
   adminEmail: string;
 };
+
+type SiteContent = ReturnType<typeof useSiteContent>;
+type ProductInput = Parameters<SiteContent["updateProduct"]>[1];
+type GalleryItemInput = Parameters<SiteContent["updateGalleryItem"]>[1];
+type NewsItemInput = Parameters<SiteContent["updateNewsItem"]>[1];
+type CollectionVideoInput = Parameters<SiteContent["updateCollectionVideo"]>[1];
+
+type FormStatus = { text: string; isError: boolean } | null;
+
+function FormNote({ status }: { status: FormStatus }) {
+  if (!status) {
+    return null;
+  }
+
+  return <p className={status.isError ? "error-note" : "success-note"}>{status.text}</p>;
+}
 
 export function AdminPage({ adminEmail }: AdminPageProps) {
   const {
@@ -20,18 +40,27 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
     dictionary,
     locale,
     mode,
+    updateCollectionVideo,
+    updateGalleryItem,
+    updateNewsItem,
+    updateProduct,
   } = useSiteContent();
-  const [productMessage, setProductMessage] = useState("");
-  const [galleryMessage, setGalleryMessage] = useState("");
-  const [newsMessage, setNewsMessage] = useState("");
-  const [collectionMessage, setCollectionMessage] = useState("");
-  const [deleteMessage, setDeleteMessage] = useState("");
+  const [productMessage, setProductMessage] = useState<FormStatus>(null);
+  const [galleryMessage, setGalleryMessage] = useState<FormStatus>(null);
+  const [newsMessage, setNewsMessage] = useState<FormStatus>(null);
+  const [collectionMessage, setCollectionMessage] = useState<FormStatus>(null);
+  const [deleteMessage, setDeleteMessage] = useState<FormStatus>(null);
   const [deletingId, setDeletingId] = useState("");
   const [productImage, setProductImage] = useState("");
   const [galleryImage, setGalleryImage] = useState("");
   const [newsImage, setNewsImage] = useState("");
   const [collectionCover, setCollectionCover] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
+
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [editingGalleryId, setEditingGalleryId] = useState<string | null>(null);
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
+  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(null);
 
   return (
     <section className="section page-intro">
@@ -78,14 +107,18 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                   shortDescription: String(formData.get("shortDescription") || ""),
                   description: String(formData.get("description") || ""),
                   price: String(formData.get("price") || ""),
+                  colors: parseColors(String(formData.get("colors") || "")),
+                  sizes: formData.getAll("sizes").map(String),
+                  inStock: formData.get("inStock") === "on",
                 });
                 event.currentTarget.reset();
                 setProductImage("");
-                setProductMessage(message);
+                setProductMessage({ text: message, isError: false });
               } catch (error) {
-                setProductMessage(
-                  error instanceof Error ? error.message : "Unable to save product.",
-                );
+                setProductMessage({
+                  text: error instanceof Error ? error.message : "Unable to save product.",
+                  isError: true,
+                });
               }
             }}
           >
@@ -117,10 +150,19 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
               rows={5}
               required
             />
+            <label>
+              {dictionary.admin.colors}
+              <input name="colors" placeholder={dictionary.admin.colorsHint} />
+            </label>
+            <SizeCheckboxGroup label={dictionary.admin.sizes} name="sizes" />
+            <label className="toggle-field">
+              <input name="inStock" type="checkbox" defaultChecked />
+              {dictionary.admin.availability}: {dictionary.admin.inStock}
+            </label>
             <button className="button-primary" type="submit">
               {dictionary.admin.addProduct}
             </button>
-            {productMessage ? <p className="success-note">{productMessage}</p> : null}
+            <FormNote status={productMessage} />
           </form>
 
           <form
@@ -137,13 +179,12 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 });
                 event.currentTarget.reset();
                 setGalleryImage("");
-                setGalleryMessage(message);
+                setGalleryMessage({ text: message, isError: false });
               } catch (error) {
-                setGalleryMessage(
-                  error instanceof Error
-                    ? error.message
-                    : "Unable to save gallery item.",
-                );
+                setGalleryMessage({
+                  text: error instanceof Error ? error.message : "Unable to save gallery item.",
+                  isError: true,
+                });
               }
             }}
           >
@@ -171,7 +212,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
             <button className="button-primary" type="submit">
               {dictionary.admin.addGallery}
             </button>
-            {galleryMessage ? <p className="success-note">{galleryMessage}</p> : null}
+            <FormNote status={galleryMessage} />
           </form>
 
           <form
@@ -191,11 +232,12 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 });
                 event.currentTarget.reset();
                 setNewsImage("");
-                setNewsMessage(message);
+                setNewsMessage({ text: message, isError: false });
               } catch (error) {
-                setNewsMessage(
-                  error instanceof Error ? error.message : "Unable to save news post.",
-                );
+                setNewsMessage({
+                  text: error instanceof Error ? error.message : "Unable to save news post.",
+                  isError: true,
+                });
               }
             }}
           >
@@ -219,7 +261,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
             <button className="button-primary" type="submit">
               {dictionary.admin.addNews}
             </button>
-            {newsMessage ? <p className="success-note">{newsMessage}</p> : null}
+            <FormNote status={newsMessage} />
           </form>
 
           <form
@@ -239,13 +281,15 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
                 });
                 event.currentTarget.reset();
                 setCollectionCover("");
-                setCollectionMessage(message);
+                setCollectionMessage({ text: message, isError: false });
               } catch (error) {
-                setCollectionMessage(
-                  error instanceof Error
-                    ? error.message
-                    : "Unable to save collection video.",
-                );
+                setCollectionMessage({
+                  text:
+                    error instanceof Error
+                      ? error.message
+                      : "Unable to save collection video.",
+                  isError: true,
+                });
               }
             }}
           >
@@ -278,7 +322,7 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
             <button className="button-primary" type="submit">
               {dictionary.admin.addCollection}
             </button>
-            {collectionMessage ? <p className="success-note">{collectionMessage}</p> : null}
+            <FormNote status={collectionMessage} />
           </form>
         </div>
 
@@ -289,64 +333,104 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
             <p>{dictionary.admin.manageSubtitle}</p>
           </div>
 
-          {deleteMessage ? <p className="success-note">{deleteMessage}</p> : null}
+          <FormNote status={deleteMessage} />
 
           <div className="admin-manage-grid">
-            <AdminDeleteList
-              deleteLabel={dictionary.admin.delete}
+            <AdminItemList
               deletingId={deletingId}
-              deletingLabel={dictionary.admin.deleting}
-              items={content.gallery.map((item) => ({
-                id: item.id,
-                label: item.title[locale],
-                meta: item.location[locale],
-              }))}
+              dictionary={dictionary}
+              editingId={editingGalleryId}
+              items={content.gallery}
               kind="gallery"
-              noItemsLabel={dictionary.admin.noItems}
+              renderEditForm={(item) => (
+                <GalleryEditForm
+                  dictionary={dictionary}
+                  item={item}
+                  onCancel={() => setEditingGalleryId(null)}
+                  onSave={async (id, input) => {
+                    const message = await updateGalleryItem(id, input);
+                    return message;
+                  }}
+                />
+              )}
               title={dictionary.nav.gallery}
+              getId={(item) => item.id}
+              getLabel={(item) => item.title[locale]}
+              getMeta={(item) => item.location[locale]}
               onDelete={handleDelete}
+              onEdit={setEditingGalleryId}
             />
-            <AdminDeleteList
-              deleteLabel={dictionary.admin.delete}
+            <AdminItemList
               deletingId={deletingId}
-              deletingLabel={dictionary.admin.deleting}
-              items={content.collections.map((item) => ({
-                id: item.id,
-                label: item.title[locale],
-                meta: item.date,
-              }))}
+              dictionary={dictionary}
+              editingId={editingCollectionId}
+              items={content.collections}
               kind="collections"
-              noItemsLabel={dictionary.admin.noItems}
+              renderEditForm={(item) => (
+                <CollectionEditForm
+                  dictionary={dictionary}
+                  item={item}
+                  onCancel={() => setEditingCollectionId(null)}
+                  onSave={async (id, input) => {
+                    const message = await updateCollectionVideo(id, input);
+                    return message;
+                  }}
+                />
+              )}
               title={dictionary.nav.collections}
+              getId={(item) => item.id}
+              getLabel={(item) => item.title[locale]}
+              getMeta={(item) => item.date}
               onDelete={handleDelete}
+              onEdit={setEditingCollectionId}
             />
-            <AdminDeleteList
-              deleteLabel={dictionary.admin.delete}
+            <AdminItemList
               deletingId={deletingId}
-              deletingLabel={dictionary.admin.deleting}
-              items={content.products.map((item) => ({
-                id: item.id,
-                label: item.name[locale],
-                meta: item.price,
-              }))}
+              dictionary={dictionary}
+              editingId={editingProductId}
+              items={content.products}
               kind="products"
-              noItemsLabel={dictionary.admin.noItems}
+              renderEditForm={(item) => (
+                <ProductEditForm
+                  dictionary={dictionary}
+                  item={item}
+                  onCancel={() => setEditingProductId(null)}
+                  onSave={async (id, input) => {
+                    const message = await updateProduct(id, input);
+                    return message;
+                  }}
+                />
+              )}
               title={dictionary.nav.catalog}
+              getId={(item) => item.id}
+              getLabel={(item) => item.name[locale]}
+              getMeta={(item) => item.price}
               onDelete={handleDelete}
+              onEdit={setEditingProductId}
             />
-            <AdminDeleteList
-              deleteLabel={dictionary.admin.delete}
+            <AdminItemList
               deletingId={deletingId}
-              deletingLabel={dictionary.admin.deleting}
-              items={content.news.map((item) => ({
-                id: item.id,
-                label: item.title[locale],
-                meta: item.date,
-              }))}
+              dictionary={dictionary}
+              editingId={editingNewsId}
+              items={content.news}
               kind="news"
-              noItemsLabel={dictionary.admin.noItems}
+              renderEditForm={(item) => (
+                <NewsEditForm
+                  dictionary={dictionary}
+                  item={item}
+                  onCancel={() => setEditingNewsId(null)}
+                  onSave={async (id, input) => {
+                    const message = await updateNewsItem(id, input);
+                    return message;
+                  }}
+                />
+              )}
               title={dictionary.nav.news}
+              getId={(item) => item.id}
+              getLabel={(item) => item.title[locale]}
+              getMeta={(item) => item.date}
               onDelete={handleDelete}
+              onEdit={setEditingNewsId}
             />
           </div>
         </div>
@@ -361,68 +445,445 @@ export function AdminPage({ adminEmail }: AdminPageProps) {
       return;
     }
 
-    setDeleteMessage("");
+    setDeleteMessage(null);
     setDeletingId(id);
 
     try {
       const message = await deleteContentItem(kind, id);
-      setDeleteMessage(message);
+      setDeleteMessage({ text: message, isError: false });
     } catch (error) {
-      setDeleteMessage(error instanceof Error ? error.message : "Unable to delete item.");
+      setDeleteMessage({
+        text: error instanceof Error ? error.message : "Unable to delete item.",
+        isError: true,
+      });
     } finally {
       setDeletingId("");
     }
   }
 }
 
-type AdminDeleteListProps = {
-  deleteLabel: string;
+function parseColors(value: string) {
+  return value
+    .split(",")
+    .map((color) => color.trim())
+    .filter(Boolean);
+}
+
+function SizeCheckboxGroup({
+  label,
+  name,
+  defaultValue = [],
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string[];
+}) {
+  return (
+    <label>
+      {label}
+      <span className="checkbox-group">
+        {PRODUCT_SIZES.map((size) => (
+          <span className="checkbox-pill" key={size}>
+            <input
+              defaultChecked={defaultValue.includes(size)}
+              name={name}
+              type="checkbox"
+              value={size}
+            />
+            {size}
+          </span>
+        ))}
+      </span>
+    </label>
+  );
+}
+
+type AdminItemListProps<T> = {
   deletingId: string;
-  deletingLabel: string;
-  items: Array<{
-    id: string;
-    label: string;
-    meta: string;
-  }>;
+  dictionary: Dictionary;
+  editingId: string | null;
+  items: T[];
   kind: ContentKind;
-  noItemsLabel: string;
   title: string;
+  getId: (item: T) => string;
+  getLabel: (item: T) => string;
+  getMeta: (item: T) => string;
   onDelete: (kind: ContentKind, id: string, label: string) => void;
+  onEdit: (id: string | null) => void;
+  renderEditForm: (item: T) => ReactNode;
 };
 
-function AdminDeleteList({
-  deleteLabel,
+function AdminItemList<T>({
   deletingId,
-  deletingLabel,
+  dictionary,
+  editingId,
   items,
   kind,
-  noItemsLabel,
-  onDelete,
   title,
-}: AdminDeleteListProps) {
+  getId,
+  getLabel,
+  getMeta,
+  onDelete,
+  onEdit,
+  renderEditForm,
+}: AdminItemListProps<T>) {
   return (
     <section className="admin-delete-card">
       <h3>{title}</h3>
       <div className="admin-delete-list">
-        {items.map((item) => (
-          <div className="admin-delete-row" key={item.id}>
-            <div>
-              <strong>{item.label}</strong>
-              <span>{item.meta}</span>
+        {items.map((item) => {
+          const id = getId(item);
+
+          if (editingId === id) {
+            return <div key={id}>{renderEditForm(item)}</div>;
+          }
+
+          const label = getLabel(item);
+
+          return (
+            <div className="admin-delete-row" key={id}>
+              <div>
+                <strong>{label}</strong>
+                <span>{getMeta(item)}</span>
+              </div>
+              <div className="admin-row-actions">
+                <button
+                  className="button-edit"
+                  disabled={deletingId === id}
+                  type="button"
+                  onClick={() => onEdit(id)}
+                >
+                  {dictionary.admin.edit}
+                </button>
+                <button
+                  className="button-danger"
+                  disabled={deletingId === id}
+                  type="button"
+                  onClick={() => onDelete(kind, id, label)}
+                >
+                  {deletingId === id ? dictionary.admin.deleting : dictionary.admin.delete}
+                </button>
+              </div>
             </div>
-            <button
-              className="button-danger"
-              disabled={deletingId === item.id}
-              type="button"
-              onClick={() => onDelete(kind, item.id, item.label)}
-            >
-              {deletingId === item.id ? deletingLabel : deleteLabel}
-            </button>
-          </div>
-        ))}
-        {items.length === 0 ? <p>{noItemsLabel}</p> : null}
+          );
+        })}
+        {items.length === 0 ? <p>{dictionary.admin.noItems}</p> : null}
       </div>
     </section>
+  );
+}
+
+type EditFormProps<T, I> = {
+  dictionary: Dictionary;
+  item: T;
+  onCancel: () => void;
+  onSave: (id: string, input: I) => Promise<string>;
+};
+
+function ProductEditForm({
+  dictionary,
+  item,
+  onCancel,
+  onSave,
+}: EditFormProps<Product, ProductInput>) {
+  const [image, setImage] = useState(item.image);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<FormStatus>(null);
+
+  return (
+    <form
+      className="admin-edit-card"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        setSaving(true);
+        setStatus(null);
+
+        try {
+          const message = await onSave(item.id, {
+            image,
+            name: String(formData.get("name") || ""),
+            category: String(formData.get("category") || ""),
+            shortDescription: String(formData.get("shortDescription") || ""),
+            description: String(formData.get("description") || ""),
+            price: String(formData.get("price") || ""),
+            colors: parseColors(String(formData.get("colors") || "")),
+            sizes: formData.getAll("sizes").map(String),
+            inStock: formData.get("inStock") === "on",
+          });
+          setStatus({ text: message, isError: false });
+        } catch (error) {
+          setStatus({
+            text: error instanceof Error ? error.message : "Unable to update product.",
+            isError: true,
+          });
+        } finally {
+          setSaving(false);
+        }
+      }}
+    >
+      <input name="name" defaultValue={item.name.uz} placeholder={dictionary.admin.productName} required />
+      <input name="category" defaultValue={item.category.uz} placeholder={dictionary.admin.category} required />
+      <input name="price" defaultValue={item.price} placeholder={dictionary.admin.price} required />
+      <UploadField
+        accept="image/*"
+        chooseFileLabel={dictionary.admin.chooseFile}
+        kind="image"
+        label={dictionary.admin.productImage}
+        name="image"
+        placeholder="/products/product-1.svg"
+        uploadCompleteLabel={dictionary.admin.uploadComplete}
+        uploadingLabel={dictionary.admin.uploading}
+        value={image}
+        onChange={setImage}
+      />
+      <textarea
+        name="shortDescription"
+        defaultValue={item.shortDescription.uz}
+        placeholder={dictionary.admin.shortDesc}
+        rows={3}
+        required
+      />
+      <textarea
+        name="description"
+        defaultValue={item.description.uz}
+        placeholder={dictionary.admin.description}
+        rows={5}
+        required
+      />
+      <label>
+        {dictionary.admin.colors}
+        <input name="colors" defaultValue={item.colors.join(", ")} placeholder={dictionary.admin.colorsHint} />
+      </label>
+      <SizeCheckboxGroup defaultValue={item.sizes} label={dictionary.admin.sizes} name="sizes" />
+      <label className="toggle-field">
+        <input name="inStock" type="checkbox" defaultChecked={item.inStock} />
+        {dictionary.admin.availability}: {item.inStock ? dictionary.admin.inStock : dictionary.admin.outOfStock}
+      </label>
+      <div className="admin-edit-actions">
+        <button className="button-primary" type="submit" disabled={saving}>
+          {saving ? dictionary.admin.saving : dictionary.admin.save}
+        </button>
+        <button className="button-secondary" type="button" onClick={onCancel}>
+          {dictionary.admin.cancel}
+        </button>
+      </div>
+      <FormNote status={status} />
+    </form>
+  );
+}
+
+function GalleryEditForm({
+  dictionary,
+  item,
+  onCancel,
+  onSave,
+}: EditFormProps<GalleryItem, GalleryItemInput>) {
+  const [image, setImage] = useState(item.image);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<FormStatus>(null);
+
+  return (
+    <form
+      className="admin-edit-card"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        setSaving(true);
+        setStatus(null);
+
+        try {
+          const message = await onSave(item.id, {
+            image,
+            title: String(formData.get("title") || ""),
+            location: String(formData.get("location") || ""),
+            description: String(formData.get("description") || ""),
+          });
+          setStatus({ text: message, isError: false });
+        } catch (error) {
+          setStatus({
+            text: error instanceof Error ? error.message : "Unable to update gallery item.",
+            isError: true,
+          });
+        } finally {
+          setSaving(false);
+        }
+      }}
+    >
+      <input name="title" defaultValue={item.title.uz} placeholder={dictionary.admin.galleryTitle} required />
+      <input name="location" defaultValue={item.location.uz} placeholder={dictionary.admin.galleryLocation} required />
+      <UploadField
+        accept="image/*"
+        chooseFileLabel={dictionary.admin.chooseFile}
+        kind="image"
+        label={dictionary.admin.galleryImage}
+        name="image"
+        placeholder="/gallery/gallery-1.svg"
+        uploadCompleteLabel={dictionary.admin.uploadComplete}
+        uploadingLabel={dictionary.admin.uploading}
+        value={image}
+        onChange={setImage}
+      />
+      <textarea
+        name="description"
+        defaultValue={item.description.uz}
+        placeholder={dictionary.admin.description}
+        rows={5}
+        required
+      />
+      <div className="admin-edit-actions">
+        <button className="button-primary" type="submit" disabled={saving}>
+          {saving ? dictionary.admin.saving : dictionary.admin.save}
+        </button>
+        <button className="button-secondary" type="button" onClick={onCancel}>
+          {dictionary.admin.cancel}
+        </button>
+      </div>
+      <FormNote status={status} />
+    </form>
+  );
+}
+
+function NewsEditForm({
+  dictionary,
+  item,
+  onCancel,
+  onSave,
+}: EditFormProps<NewsItem, NewsItemInput>) {
+  const [image, setImage] = useState(item.cover);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<FormStatus>(null);
+
+  return (
+    <form
+      className="admin-edit-card"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        setSaving(true);
+        setStatus(null);
+
+        try {
+          const message = await onSave(item.id, {
+            image,
+            title: String(formData.get("title") || ""),
+            excerpt: String(formData.get("excerpt") || ""),
+            body: String(formData.get("body") || ""),
+            date: String(formData.get("date") || item.date),
+          });
+          setStatus({ text: message, isError: false });
+        } catch (error) {
+          setStatus({
+            text: error instanceof Error ? error.message : "Unable to update news post.",
+            isError: true,
+          });
+        } finally {
+          setSaving(false);
+        }
+      }}
+    >
+      <input name="title" defaultValue={item.title.uz} placeholder={dictionary.admin.newsTitle} required />
+      <input aria-label={dictionary.admin.date} defaultValue={item.date} name="date" type="date" required />
+      <UploadField
+        accept="image/*"
+        chooseFileLabel={dictionary.admin.chooseFile}
+        kind="image"
+        label={dictionary.admin.newsCover}
+        name="image"
+        placeholder="/news/news-1.svg"
+        uploadCompleteLabel={dictionary.admin.uploadComplete}
+        uploadingLabel={dictionary.admin.uploading}
+        value={image}
+        onChange={setImage}
+      />
+      <textarea name="excerpt" defaultValue={item.excerpt.uz} placeholder={dictionary.admin.excerpt} rows={3} required />
+      <textarea name="body" defaultValue={item.body.uz} placeholder={dictionary.admin.articleText} rows={5} required />
+      <div className="admin-edit-actions">
+        <button className="button-primary" type="submit" disabled={saving}>
+          {saving ? dictionary.admin.saving : dictionary.admin.save}
+        </button>
+        <button className="button-secondary" type="button" onClick={onCancel}>
+          {dictionary.admin.cancel}
+        </button>
+      </div>
+      <FormNote status={status} />
+    </form>
+  );
+}
+
+function CollectionEditForm({
+  dictionary,
+  item,
+  onCancel,
+  onSave,
+}: EditFormProps<CollectionVideo, CollectionVideoInput>) {
+  const [cover, setCover] = useState(item.cover);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<FormStatus>(null);
+
+  return (
+    <form
+      className="admin-edit-card"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        setSaving(true);
+        setStatus(null);
+
+        try {
+          const message = await onSave(item.id, {
+            cover,
+            videoUrl: String(formData.get("videoUrl") || ""),
+            title: String(formData.get("title") || ""),
+            description: String(formData.get("description") || ""),
+            date: String(formData.get("date") || item.date),
+          });
+          setStatus({ text: message, isError: false });
+        } catch (error) {
+          setStatus({
+            text:
+              error instanceof Error
+                ? error.message
+                : "Unable to update collection video.",
+            isError: true,
+          });
+        } finally {
+          setSaving(false);
+        }
+      }}
+    >
+      <input name="title" defaultValue={item.title.uz} placeholder={dictionary.admin.collectionTitle} required />
+      <input aria-label={dictionary.admin.date} defaultValue={item.date} name="date" type="date" required />
+      <input name="videoUrl" defaultValue={item.videoUrl} placeholder={dictionary.admin.videoUrl} required />
+      <UploadField
+        accept="image/*"
+        chooseFileLabel={dictionary.admin.chooseFile}
+        kind="image"
+        label={dictionary.admin.videoCover}
+        name="cover"
+        placeholder="/uploads/ikat/look-09.jpg"
+        uploadCompleteLabel={dictionary.admin.uploadComplete}
+        uploadingLabel={dictionary.admin.uploading}
+        value={cover}
+        onChange={setCover}
+      />
+      <textarea
+        name="description"
+        defaultValue={item.description.uz}
+        placeholder={dictionary.admin.collectionDescription}
+        rows={5}
+        required
+      />
+      <div className="admin-edit-actions">
+        <button className="button-primary" type="submit" disabled={saving}>
+          {saving ? dictionary.admin.saving : dictionary.admin.save}
+        </button>
+        <button className="button-secondary" type="button" onClick={onCancel}>
+          {dictionary.admin.cancel}
+        </button>
+      </div>
+      <FormNote status={status} />
+    </form>
   );
 }
 

@@ -10,6 +10,11 @@ const PUBLIC_ADMIN_API = new Set(["/api/admin/login", "/api/admin/logout"]);
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
+  // Root layout'da <html lang> uchun joriy yo'lni Server Component'ga uzatamiz
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  const nextWithPathname = () => NextResponse.next({ request: { headers: requestHeaders } });
+
   if (pathname.startsWith("/api/admin") && !PUBLIC_ADMIN_API.has(pathname)) {
     const session = await verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
 
@@ -24,7 +29,7 @@ export async function proxy(request: NextRequest) {
   );
 
   if (!isSupportedLocale || section !== "admin") {
-    return NextResponse.next();
+    return nextWithPathname();
   }
 
   const session = await verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
@@ -47,7 +52,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  return nextWithPathname();
 }
 
 export const config = {
