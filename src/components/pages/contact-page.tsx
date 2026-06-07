@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useSiteContent } from "@/components/content-provider";
 import { ViewportReveal } from "@/components/viewport-reveal";
 import { socialLinks } from "@/lib/social";
 
 export function ContactPage() {
   const { dictionary } = useSiteContent();
-  const [sent, setSent] = useState(false);
 
   return (
     <section className="section page-intro">
@@ -57,14 +55,14 @@ export function ContactPage() {
             </div>
           </div>
 
-          <div className="map-frame">
-            <iframe
-              title="IKAT map"
-              src={socialLinks.maps}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          <a
+            href="https://maps.google.com/?q=Samarqand,O'zbekiston"
+            target="_blank"
+            rel="noreferrer"
+            className="button-secondary"
+          >
+            {dictionary.ui.location}
+          </a>
         </ViewportReveal>
 
         <ViewportReveal className="contact-form" delay={140}>
@@ -77,14 +75,9 @@ export function ContactPage() {
               const phone = String(formData.get("phone") ?? "");
               const message = String(formData.get("message") ?? "");
 
-              const text = [
-                `${dictionary.contact.form.name}: ${name}`,
-                `${dictionary.contact.form.phone}: ${phone}`,
-                `${dictionary.contact.form.message}: ${message}`,
-              ].join("\n");
+              const text = `Ism: ${name}%0ATelefon: ${phone}%0AXabar: ${message}`;
 
-              window.open(`https://wa.me/998906055855?text=${encodeURIComponent(text)}`, "_blank");
-              setSent(true);
+              window.location.href = `https://wa.me/998906055855?text=${text}`;
             }}
           >
             <label>
@@ -102,7 +95,6 @@ export function ContactPage() {
             <button className="button-primary" type="submit">
               {dictionary.contact.form.submit}
             </button>
-            {sent ? <p className="success-note">{dictionary.contact.success}</p> : null}
           </form>
         </ViewportReveal>
       </div>
