@@ -951,6 +951,14 @@ textarea::placeholder {
   background: rgba(43, 29, 24, 0.96);
 }
 
+.floating-actions__icon {
+  display: inline-flex;
+}
+
+.floating-actions__text {
+  margin-left: 0.5rem;
+}
+
 .reveal-block {
   opacity: 1;
   transform: none;
@@ -1129,20 +1137,6 @@ textarea::placeholder {
     padding: 1.2rem;
   }
 
-  .floating-actions {
-    left: 0.6rem;
-    right: 0.6rem;
-    bottom: 0.7rem;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .floating-actions__link {
-    flex: 1 1 calc(50% - 0.4rem);
-    min-width: 8rem;
-  }
-
   .page-shell {
     padding-bottom: 7rem;
   }
@@ -1156,10 +1150,11 @@ textarea::placeholder {
   .floating-actions {
     position: fixed;
     bottom: 1.25rem;
-    right: 1rem;
+    right: 12px;
+    left: auto;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 8px;
     z-index: 999;
   }
 
@@ -1167,15 +1162,20 @@ textarea::placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.75rem;
-    padding: 0.6rem 1.1rem;
-    border-radius: 999px;
+    width: 44px;
+    height: 44px;
+    min-height: 0;
+    min-width: 0;
+    flex: none;
+    padding: 0;
+    border-radius: 50%;
     background: var(--gold);
     color: #1a0f00;
-    font-size: 0.8rem;
-    font-weight: 600;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-    white-space: nowrap;
+  }
+
+  .floating-actions__text {
+    display: none;
   }
 
   .language-switcher--mobile {
@@ -1390,10 +1390,6 @@ textarea::placeholder {
 .button-danger:disabled {
   cursor: progress;
   opacity: 0.68;
-}
-
-.floating-actions__link {
-  min-width: 7.8rem;
 }
 
 .checkbox-group {
