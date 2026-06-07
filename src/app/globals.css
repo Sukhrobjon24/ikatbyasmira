@@ -328,21 +328,25 @@ p {
 }
 
 .mobile-nav__link {
-  display: block;
-  padding: 0.95rem 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
   font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
   font-size: clamp(1.9rem, 7vw, 3rem);
-  border-bottom: 1px solid rgba(255, 232, 200, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--muted);
-  transition:
-    color 180ms ease,
-    transform 180ms ease;
+  transition: color 180ms ease;
+}
+
+.mobile-nav__icon {
+  display: inline-flex;
+  color: var(--gold);
 }
 
 .mobile-nav__link:hover,
 .mobile-nav__link.is-active {
-  color: var(--text);
-  transform: translateX(4px);
+  color: var(--gold);
 }
 
 .mobile-quick-links {

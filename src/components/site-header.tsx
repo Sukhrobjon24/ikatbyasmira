@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Home, Image, Info, Layers, Newspaper, Phone, ShoppingBag } from "lucide-react";
 import { localeLabels, locales } from "@/lib/i18n";
 import { getWhatsAppUrl, socialLinks } from "@/lib/social";
 import { InstagramIcon, LocationIcon, TelegramIcon, WhatsAppIcon } from "./social-icons";
@@ -16,13 +17,17 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   const navItems = [
-    { href: `/${locale}`, label: dictionary.nav.home },
-    { href: `/${locale}/about`, label: dictionary.nav.about },
-    { href: `/${locale}/catalog`, label: dictionary.nav.catalog },
-    { href: `/${locale}/collections`, label: dictionary.nav.collections },
-    { href: `/${locale}/gallery`, label: dictionary.nav.gallery },
-    { href: `/${locale}/news`, label: dictionary.nav.news },
-    { href: `/${locale}/contact`, label: dictionary.nav.contact },
+    { href: `/${locale}`, label: dictionary.nav.home, icon: <Home size={20} /> },
+    { href: `/${locale}/about`, label: dictionary.nav.about, icon: <Info size={20} /> },
+    { href: `/${locale}/catalog`, label: dictionary.nav.catalog, icon: <ShoppingBag size={20} /> },
+    {
+      href: `/${locale}/collections`,
+      label: dictionary.nav.collections,
+      icon: <Layers size={20} />,
+    },
+    { href: `/${locale}/gallery`, label: dictionary.nav.gallery, icon: <Image size={20} /> },
+    { href: `/${locale}/news`, label: dictionary.nav.news, icon: <Newspaper size={20} /> },
+    { href: `/${locale}/contact`, label: dictionary.nav.contact, icon: <Phone size={20} /> },
   ];
 
   const quickLinks = [
@@ -151,7 +156,8 @@ export function SiteHeader() {
                   className={`mobile-nav__link${active ? " is-active" : ""}`}
                   onClick={() => setMenuOpen(false)}
                 >
-                  {item.label}
+                  <span className="mobile-nav__icon">{item.icon}</span>
+                  <span className="mobile-nav__label">{item.label}</span>
                 </Link>
               );
             })}
