@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { localeLabels, locales } from "@/lib/i18n";
 import { getWhatsAppUrl, socialLinks } from "@/lib/social";
+import { InstagramIcon, LocationIcon, TelegramIcon, WhatsAppIcon } from "./social-icons";
 import type { Locale } from "@/types/content";
 import { useSiteContent } from "./content-provider";
 
@@ -25,10 +26,30 @@ export function SiteHeader() {
   ];
 
   const quickLinks = [
-    { href: getWhatsAppUrl(), label: dictionary.ui.whatsapp },
-    { href: socialLinks.telegram, label: dictionary.ui.telegram },
-    { href: socialLinks.instagram, label: dictionary.ui.instagram },
-    { href: socialLinks.maps, label: dictionary.ui.location },
+    {
+      id: "whatsapp",
+      href: getWhatsAppUrl(),
+      label: dictionary.ui.whatsapp,
+      icon: <WhatsAppIcon />,
+    },
+    {
+      id: "telegram",
+      href: socialLinks.telegram,
+      label: dictionary.ui.telegram,
+      icon: <TelegramIcon />,
+    },
+    {
+      id: "instagram",
+      href: socialLinks.instagram,
+      label: dictionary.ui.instagram,
+      icon: <InstagramIcon />,
+    },
+    {
+      id: "location",
+      href: socialLinks.maps,
+      label: dictionary.ui.location,
+      icon: <LocationIcon />,
+    },
   ];
 
   useEffect(() => {
@@ -156,8 +177,15 @@ export function SiteHeader() {
 
             <div className="mobile-quick-links">
               {quickLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
-                  {link.label}
+                <a
+                  key={link.id}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`mobile-quick-links__link mobile-quick-links__link--${link.id}`}
+                >
+                  <span className="mobile-quick-links__icon">{link.icon}</span>
+                  <span className="mobile-quick-links__text">{link.label}</span>
                 </a>
               ))}
             </div>
