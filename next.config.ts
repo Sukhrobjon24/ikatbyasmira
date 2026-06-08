@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
 
   compress: true,
 
+  redirects: async () => [
+    {
+      source: "/:path*",
+      has: [{ type: "host", value: "ikatbyasmira.uz" }],
+      destination: "https://www.ikatbyasmira.uz/:path*",
+      permanent: true,
+    },
+  ],
+
   headers: async () => [
     {
       source: "/(.*)",
