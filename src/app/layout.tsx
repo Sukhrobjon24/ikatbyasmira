@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { locales } from "@/lib/i18n";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const defaultLocale = "uz";
@@ -53,7 +54,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="h-full scroll-smooth">
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
