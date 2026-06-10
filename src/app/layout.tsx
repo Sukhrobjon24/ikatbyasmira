@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { locales } from "@/lib/i18n";
 import "./globals.css";
 
@@ -53,7 +54,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="h-full scroll-smooth">
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
